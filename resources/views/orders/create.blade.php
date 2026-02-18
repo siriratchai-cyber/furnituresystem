@@ -2,245 +2,406 @@
 
 @section('content')
 
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
-.card-container{
-    max-width:1000px;
-    margin:40px auto;
-    background:#fff;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.08);
+body{
+background:linear-gradient(135deg,#f3ede7,#e6d5c3);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
 }
-.title{
-    font-size:24px;
-    font-weight:bold;
-    margin-bottom:20px;
-    color:#2c3e50;
+
+.glass-card{
+background:#ffffff;
+border-radius:18px;
+box-shadow:0 8px 25px rgba(120,72,0,0.08);
+border:1px solid #eadfce;
 }
-input, textarea{
-    padding:8px;
-    border-radius:8px;
-    border:1px solid #ddd;
-    width:100%;
-    margin-bottom:10px;
+
+input,select,textarea{
+border-radius:10px !important;
+border:1px solid #d6c2ad !important;
 }
-input:focus, textarea:focus{
-    outline:none;
-    border:1px solid #3498db;
+
+input:focus,select:focus,textarea:focus{
+box-shadow:0 0 0 3px rgba(150,90,40,0.2) !important;
+border-color:#8b5e34 !important;
 }
-.btn{
-    padding:8px 16px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:500;
+
+.pos-summary{
+background:linear-gradient(135deg,#6f4e37,#5c3d2e);
+color:white;
+border-radius:18px;
+padding:25px;
 }
-.btn-add{ background:#3498db; color:#fff; }
-.btn-save{ background:#2ecc71; color:#fff; }
-.btn-danger{ background:#e74c3c; color:#fff; }
-.btn-cancel{ background:#95a5a6; color:#fff; }
-table{
-    width:100%;
-    margin-top:15px;
-    border-collapse:collapse;
+
+.btn-brown{background:#8b5e34;color:white;border:none;}
+.btn-brown:hover{background:#6f4e37;}
+
+.btn-outline-brown{
+border:1px solid #8b5e34;
+color:#8b5e34;
 }
-th{
-    background:#f4f6f9;
+.btn-outline-brown:hover{
+background:#8b5e34;
+color:white;
 }
-th, td{
-    padding:10px;
-    text-align:center;
-    border-bottom:1px solid #eee;
+
+.invoice-box{
+display:none;
+background:#f7efe6;
+border-radius:14px;
+padding:18px;
+margin-top:15px;
 }
-.summary{
-    margin-top:20px;
-    font-size:18px;
+
+/* Table style */
+table thead{
+background:#f3e7da;
 }
-.low-stock{
-    background:#fff3cd;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:20px;
-    border:1px solid #ffeeba;
-    color:#856404;
+table tbody tr{
+transition:0.2s;
+}
+table tbody tr:hover{
+background:#faf4ee;
+}
+
+/* TomSelect */
+.ts-control{
+border-radius:10px !important;
+border:1px solid #d6c2ad !important;
+}
+.ts-dropdown{
+border-radius:12px !important;
 }
 </style>
 
-<div class="card-container">
+<div class="container mt-4">
+<h3 class="mb-4 fw-semibold text-dark">🧾 สร้างคำสั่งซื้อ</h3>
 
-    <div class="title">เพิ่มคำสั่งซื้อ</div>
+<form method="POST" action="{{ route('orders.store') }}" id="orderForm">
+@csrf
+<input type="hidden" name="status" value="pending">
 
-    @if(session('error'))
-        <div style="color:red; margin-bottom:15px;">
-            {{ session('error') }}
-        </div>
-    @endif
+<!-- ================= CUSTOMER ================= -->
+<div class="glass-card p-4 mb-4">
+<div class="row">
 
-    <form id="orderForm" action="{{ route('orders.store') }}" method="POST">
-        @csrf
-
-        {{-- ================= CUSTOMER SECTION ================= --}}
-        <h4>ข้อมูลลูกค้า</h4>
-
-        <label>ชื่อลูกค้า</label>
-        <input type="text" name="customername" list="customerList" required>
-
-        <datalist id="customerList">
-            @foreach($customers as $c)
-                <option value="{{ $c->customername }}">
-            @endforeach
-        </datalist>
-
-        <label>เบอร์โทร</label>
-        <input type="text" name="tel" placeholder="กรอกเมื่อเป็นลูกค้าใหม่">
-
-        <label>ที่อยู่</label>
-        <textarea name="address" rows="2" placeholder="กรอกเมื่อเป็นลูกค้าใหม่"></textarea>
-
-        <hr>
-
-        {{-- ================= PRODUCT SECTION ================= --}}
-        <h4>รายการสินค้า</h4>
-
-        <table id="productTable">
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>จำนวน</th>
-                    <th>ราคา</th>
-                    <th>รวม</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <br>
-        <button type="button" class="btn btn-add" onclick="addRow()">+ เพิ่มสินค้า</button>
-
-        <hr>
-
-        {{-- ================= SUMMARY ================= --}}
-        <label>ส่วนลด</label>
-        <input type="number" id="discount" value="0" min="0" oninput="calculateTotal()">
-
-        <div class="summary">
-            <div>ยอดรวม: <strong><span id="totalText">0</span></strong></div>
-            <div>ยอดสุทธิ: <strong><span id="netText">0</span></strong></div>
-        </div>
-
-        <input type="hidden" name="total" id="total">
-        <input type="hidden" name="net" id="net">
-        <input type="hidden" name="products" id="products">
-
-        <br><br>
-
-        <button type="submit" class="btn btn-save">บันทึก</button>
-        <button type="reset" class="btn btn-cancel">ยกเลิก</button>
-
-    </form>
+<div class="col-md-6 mb-3">
+<label>ชื่อลูกค้า</label>
+<input type="text" name="customer_name" class="form-control"
+placeholder="เช่น สมชาย ใจดี" required>
 </div>
 
-<datalist id="productData">
-    @foreach($products as $p)
-        <option value="{{ $p->productid }}">
-    @endforeach
-</datalist>
+<div class="col-md-6 mb-3">
+<label>เบอร์โทร</label>
+<input type="text" name="tel" class="form-control"
+placeholder="0812345678">
+</div>
+
+<div class="col-12 mb-3">
+<label>ที่อยู่ลูกค้า</label>
+<textarea name="customer_address"
+class="form-control"
+rows="2"
+placeholder="99/9 หมู่ 5 ต.บางรัก อ.เมือง จ.เชียงใหม่ 50000"
+required></textarea>
+</div>
+
+<div class="col-12">
+<div class="form-check mt-2">
+<input class="form-check-input" type="checkbox" id="needInvoice">
+<label class="form-check-label">ออกใบกำกับภาษี</label>
+</div>
+</div>
+
+</div>
+
+<div class="invoice-box" id="invoiceForm">
+<div class="row">
+<div class="col-md-6 mb-3">
+<label>ชื่อบริษัท</label>
+<input type="text" name="tax_company"
+class="form-control"
+placeholder="บริษัท เอ บี ซี จำกัด">
+</div>
+
+<div class="col-md-6 mb-3">
+<label>เลขผู้เสียภาษี</label>
+<input type="text" name="tax_number"
+class="form-control"
+placeholder="0105551234567">
+</div>
+</div>
+</div>
+</div>
+
+<!-- ================= PRODUCT ================= -->
+<div class="glass-card p-4 mb-4">
+<h5 class="mb-3 text-dark">เพิ่มสินค้า</h5>
+
+<table class="table text-center align-middle">
+<thead>
+<tr>
+<th width="30%">สินค้า (รหัส)</th>
+<th width="10%">Stock</th>
+<th width="15%">จำนวน</th>
+<th width="15%">ราคา</th>
+<th width="15%">รวม</th>
+<th width="10%">ลบ</th>
+</tr>
+</thead>
+<tbody id="productBody"></tbody>
+</table>
+
+<button type="button" onclick="addRow()" class="btn btn-outline-brown">
++ เพิ่มสินค้า
+</button>
+</div>
+
+<!-- ================= SUMMARY ================= -->
+<div class="pos-summary mb-4">
+<div class="row align-items-center">
+<div class="col-md-4">
+<h6>ยอดรวม</h6>
+<h4 id="totalText">0.00</h4>
+</div>
+<div class="col-md-4">
+<label>ส่วนลด</label>
+<input type="number" id="discount" class="form-control" value="0" min="0">
+</div>
+<div class="col-md-4">
+<h6>ยอดสุทธิ</h6>
+<h4 id="netText">0.00</h4>
+</div>
+</div>
+</div>
+
+<input type="hidden" name="products" id="products">
+<input type="hidden" name="total" id="total">
+<input type="hidden" name="netamount" id="net">
+<input type="hidden" name="discount" id="discountHidden">
+
+<div class="text-end mb-5">
+<button type="button" onclick="cancelOrder()" class="btn btn-danger">
+ยกเลิก
+</button>
+<button type="submit" class="btn btn-brown">
+บันทึก
+</button>
+</div>
+
+</form>
+</div>
 
 <script>
 
-let productList = @json($products);
+let productList=@json($products);
 
-document.getElementById("orderForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    prepareData();
-    this.submit();
+document.getElementById("needInvoice").addEventListener("change",function(){
+document.getElementById("invoiceForm").style.display=this.checked?"block":"none";
 });
 
 function addRow(){
-    let table = document.querySelector("#productTable tbody");
-    let row = table.insertRow();
 
-    row.innerHTML = `
-        <td>
-            <input type="text" list="productData"
-                   oninput="updatePriceByProdId(this)"
-                   placeholder="กรอก Product ID">
-        </td>
-        <td>
-            <input type="number" value="1" min="1"
-                   oninput="calculateRow(this)">
-        </td>
-        <td class="price">0</td>
-        <td class="subtotal">0</td>
-        <td>
-            <button type="button" class="btn btn-danger"
-            onclick="this.closest('tr').remove(); calculateTotal();">
-            ลบ
-            </button>
-        </td>
-    `;
+let row=document.createElement("tr");
+
+row.innerHTML=`
+<td>
+<select class="productSelect">
+<option value="">🔎 ค้นหา / เลือกสินค้า</option>
+${productList.map(p=>{
+let stock=p.stockquantity??p.stock??0;
+let price=p.price??0;
+return `<option value="${p.productid}"
+data-price="${price}"
+data-stock="${stock}"
+${stock <= 0 ? 'disabled' : ''}>
+[${p.productid}] ${p.productname} ${stock <= 0 ? '(สินค้าหมด)' : ''}
+</option>`;
+}).join('')}
+</select>
+</td>
+<td class="stock">0</td>
+<td><input type="number" class="form-control qty" value="1" min="1"></td>
+<td class="price">0.00</td>
+<td class="subtotal">0.00</td>
+<td><button type="button" onclick="removeRow(this)" class="btn btn-sm btn-danger">×</button></td>
+`;
+
+document.getElementById("productBody").appendChild(row);
+
+new TomSelect(row.querySelector(".productSelect"),{
+create:false,
+sortField:{field:"text",direction:"asc"}
+});
+
+bindRow(row);
 }
 
-function updatePriceByProdId(input){
-    let prod = productList.find(p => p.productid == input.value);
-    let row = input.closest("tr");
+function bindRow(row){
 
-    row.querySelector(".price").innerText = prod ? prod.price : 0;
-    calculateRow(input);
+let select=row.querySelector(".productSelect");
+let qty=row.querySelector(".qty");
+
+select.addEventListener("change",function(){
+
+let selected=this.selectedOptions[0];
+if(!selected.value) return;
+
+let stock=parseInt(selected.dataset.stock)||0;
+
+if(stock <= 0){
+Swal.fire({
+icon:"error",
+title:"สินค้าหมดสต็อก"
+});
+select.tomselect.clear();
+return;
 }
 
-function calculateRow(el){
-    let row = el.closest("tr");
-    let qty = Number(row.querySelector("input[type='number']").value);
-    let price = Number(row.querySelector(".price").innerText);
+let price=parseFloat(selected.dataset.price)||0;
 
-    let subtotal = qty * price;
-    row.querySelector(".subtotal").innerText = subtotal;
+row.dataset.price=price;
+row.dataset.stock=stock;
 
-    calculateTotal();
+row.querySelector(".stock").innerText=stock;
+row.querySelector(".price").innerText=price.toFixed(2);
+
+calculate();
+});
+
+qty.addEventListener("input",calculate);
 }
 
-function calculateTotal(){
-    let total = 0;
-
-    document.querySelectorAll(".subtotal").forEach(td=>{
-        total += Number(td.innerText);
-    });
-
-    let discount = Number(document.getElementById("discount").value);
-    let net = total - discount;
-    if(net < 0) net = 0;
-
-    document.getElementById("totalText").innerText = total;
-    document.getElementById("netText").innerText = net;
-
-    document.getElementById("total").value = total;
-    document.getElementById("net").value = net;
+function removeRow(btn){
+btn.closest("tr").remove();
+calculate();
 }
 
-function prepareData(){
-    let data = [];
+function calculate(){
 
-    document.querySelectorAll("#productTable tbody tr").forEach(row=>{
-        let productid = row.querySelector("input[list='productData']").value;
-        let quantity = row.querySelector("input[type='number']").value;
-        let price = row.querySelector(".price").innerText;
-        let subtotal = row.querySelector(".subtotal").innerText;
+let total=0;
 
-        if(productid){
-            data.push({
-                productid: productid,
-                quantity: quantity,
-                price: price,
-                subtotal: subtotal
-            });
-        }
-    });
+document.querySelectorAll("#productBody tr").forEach(row=>{
 
-    document.getElementById("products").value = JSON.stringify(data);
+let price=parseFloat(row.dataset.price)||0;
+let qty=parseInt(row.querySelector(".qty").value)||0;
+let stock=parseInt(row.dataset.stock)||0;
+
+if(qty<=0){
+row.querySelector(".qty").value=1;
+qty=1;
+}
+
+if(stock>0 && qty>stock){
+row.querySelector(".qty").value=stock;
+qty=stock;
+}
+
+let subtotal=price*qty;
+row.querySelector(".subtotal").innerText=subtotal.toFixed(2);
+total+=subtotal;
+});
+
+let discount=parseFloat(document.getElementById("discount").value)||0;
+if(discount>total){
+discount=total;
+document.getElementById("discount").value=total;
+}
+
+let net=total-discount;
+
+document.getElementById("totalText").innerText=total.toFixed(2);
+document.getElementById("netText").innerText=net.toFixed(2);
+
+document.getElementById("total").value=total;
+document.getElementById("net").value=net;
+document.getElementById("discountHidden").value=discount;
+}
+
+document.getElementById("discount").addEventListener("input",calculate);
+
+
+/* ===========================
+   FIXED SUBMIT FLOW
+=========================== */
+
+document.getElementById("orderForm").addEventListener("submit", function(e){
+
+calculate();
+
+let items=[];
+let hasError=false;
+
+document.querySelectorAll("#productBody tr").forEach(row=>{
+
+let select=row.querySelector(".productSelect");
+
+let productId = select.tomselect
+? select.tomselect.getValue()
+: select.value;
+
+let qty=parseInt(row.querySelector(".qty").value)||0;
+let price=parseFloat(row.dataset.price)||0;
+let stock=parseInt(row.dataset.stock)||0;
+
+if(!productId || qty<=0 || (stock>0 && qty>stock)){
+hasError=true;
+}
+
+if(productId){
+items.push({
+productid:productId,
+quantity:qty,
+price:price
+});
+}
+
+});
+
+if(items.length===0){
+e.preventDefault();
+Swal.fire({
+icon:"warning",
+title:"ยังไม่ได้เลือกสินค้า"
+});
+return;
+}
+
+if(hasError){
+e.preventDefault();
+Swal.fire({
+icon:"error",
+title:"ข้อมูลไม่ถูกต้อง"
+});
+return;
+}
+
+// ใส่ JSON ก่อน submit
+document.getElementById("products").value=JSON.stringify(items);
+
+// ❗ ไม่ต้อง this.submit()
+// ปล่อยให้ form submit ตามธรรมชาติ
+
+});
+
+addRow();
+
+function cancelOrder(){
+Swal.fire({
+title:"ยกเลิกรายการ?",
+icon:"warning",
+showCancelButton:true
+}).then(res=>{
+if(res.isConfirmed){
+window.location="{{ route('orders.index') }}";
+}
+});
 }
 
 </script>
+
 
 @endsection

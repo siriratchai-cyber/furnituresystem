@@ -8,10 +8,17 @@
     <style>
         * { box-sizing: border-box; }
 
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+        }
+
+        /* ===== Full Background Theme ===== */
+        body {
+            background: linear-gradient(135deg,#f3ebe2,#e8dccd);
+            min-height: 100vh;
         }
 
         /* ===== Hamburger ===== */
@@ -22,6 +29,7 @@
             font-size: 22px;
             cursor: pointer;
             z-index: 1100;
+            color: #5a3e2b;
         }
 
         /* ===== Overlay ===== */
@@ -31,12 +39,10 @@
             background: rgba(0,0,0,0.4);
             display: none;
             z-index: 1000;
-            pointer-events: none;
         }
 
         .overlay.active {
             display: block;
-            pointer-events: auto;
         }
 
         /* ===== Sidebar ===== */
@@ -60,6 +66,7 @@
             text-align: center;
             font-weight: bold;
             margin-bottom: 20px;
+            color: #5a3e2b;
         }
 
         .sidebar a,
@@ -70,18 +77,18 @@
             color: #333;
             border-bottom: 1px solid #eee;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         .sidebar a:hover,
         .menu-item:hover {
-            background: #f2f2f2;
+            background: #f3ebe2;
         }
 
-        /* ===== Active link ===== */
         .sidebar a.active-link {
-            background: #e9ecef;
+            background: #e8dccd;
             font-weight: bold;
-            color: #000;
+            color: #5a3e2b;
         }
 
         .submenu {
@@ -96,10 +103,14 @@
 
         /* ===== Main Content ===== */
         .main-content {
-            padding: 100px 20px 40px 20px;
+            padding: 100px 40px 60px 40px;
+            min-height: 100vh;
         }
     </style>
 </head>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <body>
 
 <div class="hamburger" onclick="openSidebar()">☰</div>
@@ -147,10 +158,12 @@
        Supplier
     </a>
 
-    <a href="/sales"
-       class="{{ request()->is('sales') ? 'active-link' : '' }}">
+    @if(session('role') === 'เจ้าของ')
+    <a href="{{ route('sales.summary') }}"
+       class="{{ request()->is('sales-summary') ? 'active-link' : '' }}">
        สรุปยอดขาย
     </a>
+    @endif
 
     <a href="/profile"
        class="{{ request()->is('profile') ? 'active-link' : '' }}">
@@ -177,16 +190,13 @@ function toggleMenu(id) {
     const menu = document.getElementById(id);
 
     document.querySelectorAll('.submenu').forEach(sub => {
-        if (sub !== menu) {
-            sub.style.display = "none";
-        }
+        if (sub !== menu) sub.style.display = "none";
     });
 
     menu.style.display =
         menu.style.display === "block" ? "none" : "block";
 }
 
-/* ===== Auto open dropdown when inside section ===== */
 window.addEventListener("DOMContentLoaded", function() {
 
     if (window.location.pathname.startsWith("/orders")) {
@@ -196,9 +206,11 @@ window.addEventListener("DOMContentLoaded", function() {
     if (window.location.pathname.startsWith("/products")) {
         document.getElementById("productMenu").style.display = "block";
     }
-
 });
 </script>
+
+<script src="//unpkg.com/alpinejs" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
