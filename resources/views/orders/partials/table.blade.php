@@ -37,17 +37,16 @@
             </td>
 
             <td>
-                @if($order->payment_status == 'paid')
-                    <span class="badge rounded-pill"
-                          style="background:#4CAF50;color:white;">
-                        Paid
-                    </span>
-                @else
-                    <span class="badge rounded-pill"
-                          style="background:#ffb703;color:#3a2d20;">
-                        Pending
-                    </span>
-                @endif
+                @if($order->payment_status === 'paid')
+    <span class="badge bg-success">Paid</span>
+
+@elseif($order->payment_status === 'cancelled')
+    <span class="badge bg-danger">Cancelled</span>
+
+@else
+    <span class="badge bg-warning text-dark">Pending</span>
+@endif
+
             </td>
 
             <td>

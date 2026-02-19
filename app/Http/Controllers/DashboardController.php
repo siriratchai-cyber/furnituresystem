@@ -66,49 +66,222 @@ class DashboardController extends Controller
             ->count(),
     ];
 
-    // ===== TODAY SALES =====
-    $todaySales = DB::table('orders')
+    // ====================================
+// WEEKLY SALES (CALENDAR WEEK Mon–Sun)
+// ====================================
+
+$start = now()->startOfWeek();
+$end = now()->endOfWeek()->endOfDay();
+  
+
+$weeklySales = DB::table('orders')
+    ->selectRaw("DATE(orderdate) as sale_date, SUM(netamount) as total")
+    ->where('payment_status', 'paid')
+    ->whereBetween('orderdate', [$start, $end])
+    ->groupByRaw("DATE(orderdate)")
+    ->orderBy('sale_date')
+    ->get()
+    ->keyBy('sale_date');
+
+$labels = [];
+$data   = [];
+
+for ($i = 0; $i < 7; $i++) {
+
+    $dateObj = now()->startOfWeek()->addDays($i);
+
+    $dateKey = $dateObj->format('Y-m-d');
+
+    $labels[] = $dateObj->format('D'); 
+    // ถ้าอยากได้ 01/02 ใช้ ->format('d/m')
+
+    $data[] = $weeklySales[$dateKey]->total ?? 0;
+}
+return response()->json([
+    'summary' => $summary,
+    'todaySales' => DB::table('orders')
         ->whereDate('orderdate', today())
         ->where('payment_status', 'paid')
-        ->sum('netamount');
+        ->sum('netamount'),
 
-    // ===== LOW STOCK =====
-    $lowStock = DB::table('product')
+    'lowStock' => DB::table('product')
         ->where('stock', '<=', 5)
-        ->get();
+        ->get(),
 
-    $critical = DB::table('product')
+    'critical' => DB::table('product')
         ->where('stock', '<=', 3)
-        ->get();
+        ->get(),
 
-    // ===== CHART DATA =====
-    $sales = DB::table('orders')
-        ->whereDate('orderdate', today())
-        ->where('payment_status', 'paid')
-        ->selectRaw('EXTRACT(HOUR FROM orderdate) as hour, SUM(netamount) as total')
-        ->groupByRaw('EXTRACT(HOUR FROM orderdate)')
-        ->orderBy('hour')
-        ->get();
+    'chart' => [
+        'labels' => $labels,
+        'data'   => $data
+    ]
+]);
 
-    $labels = [];
-    $data = [];
 
-    foreach ($sales as $s) {
-        $labels[] = $s->hour . ":00";
-        $data[] = $s->total;
+}
+
+public function salesSummaryData(Request $request)
+{
+    $period = $request->period ?? 'week';
+
+    if ($period === 'week') {
+        $start = now()->startOfWeek();
+        $end   = now()->endOfWeek()->endOfDay();
+
+        $groupSales   = "DATE(orderdate)";
+        $groupExpense = "DATE(orders.orderdate)";
+        $keyFormat    = "Y-m-d";
+
+        $prevStart = now()->subWeek()->startOfWeek();
+        $prevEnd   = now()->subWeek()->endOfWeek()->endOfDay();
+
+    } elseif ($period === 'month') {
+
+        $start = now()->startOfMonth();
+        $end   = now()->endOfMonth()->endOfDay();
+
+        $groupSales   = "DATE(orderdate)";
+        $groupExpense = "DATE(orders.orderdate)";
+        $keyFormat    = "Y-m-d";
+
+        $prevStart = now()->subMonth()->startOfMonth();
+        $prevEnd   = now()->subMonth()->endOfMonth()->endOfDay();
+
+    } else {
+
+        $start = now()->startOfYear();
+        $end   = now()->endOfYear()->endOfDay();
+
+        $groupSales   = "TO_CHAR(orderdate,'YYYY-MM')";
+$groupExpense = "TO_CHAR(orders.orderdate,'YYYY-MM')";
+
+        $keyFormat    = "Y-m";
+
+        $prevStart = now()->subYear()->startOfYear();
+        $prevEnd   = now()->subYear()->endOfYear()->endOfDay();
+    }
+// ================= SALES =================
+$salesRaw = DB::table('orders')
+    ->selectRaw("$groupSales as grp, SUM(netamount) as total")
+    ->where('payment_status','paid')
+    ->whereBetween('orderdate',[$start,$end])
+    ->groupBy(DB::raw($groupSales))   // ✅ ถูกต้อง
+    ->pluck('total','grp');
+
+
+
+// ================= EXPENSE =================
+$expenseRaw = DB::table('sales_detail')
+    ->join('product','sales_detail.productid','=','product.productid')
+    ->join('orders','sales_detail.orderid','=','orders.orderid')
+    ->selectRaw("$groupExpense as grp,
+        SUM(product.cost * sales_detail.quantity) as total")
+    ->where('orders.payment_status','paid')
+    ->whereBetween('orders.orderdate',[$start,$end])
+    ->groupBy(DB::raw($groupExpense)) // ✅ ถูกต้อง
+    ->pluck('total','grp');
+
+
+
+    // ================= BUILD TIMELINE =================
+    $labels  = [];
+    $sales   = [];
+    $expense = [];
+
+   $current = $start->copy();
+
+while ($current <= $end) {
+
+    if ($period === 'year') {
+
+        $key = $current->format('Y-m');
+        $labels[] = $current->format('M');
+        $current->addMonth();
+
+    } else {
+
+        $key = $current->format('Y-m-d');
+        $labels[] = $current->format('d/m');
+        $current->addDay();
     }
 
-    return response()->json([
-        'summary' => $summary,
-        'todaySales' => $todaySales,
-        'lowStock' => $lowStock,
-        'critical' => $critical,
-        'chart' => [
-            'labels' => $labels,
-            'data' => $data
-        ]
-    ]);
+    $sales[]   = $salesRaw[$key]   ?? 0;
+    $expense[] = $expenseRaw[$key] ?? 0;
 }
+
+
+    // ================= PROFIT =================
+    $profit = [];
+    foreach ($sales as $i => $value) {
+        $profit[] = $value - ($expense[$i] ?? 0);
+    }
+
+    $totalIncome  = array_sum($sales);
+    $totalExpense = array_sum($expense);
+    $totalProfit  = $totalIncome - $totalExpense;
+
+    // ================= PREVIOUS PERIOD =================
+    $prevIncome = DB::table('orders')
+        ->where('payment_status','paid')
+        ->whereBetween('orderdate',[$prevStart,$prevEnd])
+        ->sum('netamount');
+
+    $prevExpense = DB::table('sales_detail')
+        ->join('product','sales_detail.productid','=','product.productid')
+        ->join('orders','sales_detail.orderid','=','orders.orderid')
+        ->where('orders.payment_status','paid')
+        ->whereBetween('orders.orderdate',[$prevStart,$prevEnd])
+        ->sum(DB::raw('product.cost * sales_detail.quantity'));
+
+    $prevProfit = $prevIncome - $prevExpense;
+
+    $changePercent = 0;
+
+    if ($prevProfit != 0) {
+        $changePercent =
+            (($totalProfit - $prevProfit) / abs($prevProfit)) * 100;
+    }
+
+    // ================= TOP PRODUCTS =================
+    $topProducts = DB::table('sales_detail')
+        ->join('product','sales_detail.productid','=','product.productid')
+        ->join('orders','sales_detail.orderid','=','orders.orderid')
+        ->select(
+            'product.productname',
+            DB::raw('SUM(sales_detail.quantity) as qty')
+        )
+        ->where('orders.payment_status','paid')
+        ->whereBetween('orders.orderdate',[$start,$end])
+        ->groupBy('product.productname')
+        ->orderByDesc('qty')
+        ->limit(3)
+        ->get();
+
+    return response()->json([
+        'labels'  => $labels,
+        'sales'   => $sales,
+        'expense' => $expense,
+        'profit'  => $profit,
+        'income'  => $totalIncome,
+        'outcome' => $totalExpense,
+        'net'     => $totalProfit,
+        'change_percent' => round($changePercent,2),
+        'top'     => $topProducts
+    ], 200, [], JSON_UNESCAPED_UNICODE);
+}
+
+
+
+public function summaryPage()
+{
+    return view('summary');
+}
+
+
+
+
+
 
 
 }

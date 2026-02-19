@@ -13,7 +13,12 @@ class Order extends Model
     public $timestamps = false;
 
     public function taxAddress()
-    {
-        return $this->belongsTo(TaxAddress::class, 'tax_address_id', 'taxaddressid');
-    }
+{
+    return $this->belongsTo(
+        TaxAddress::class,
+        'tax_address_id',   // foreign key ใน orders
+        'taxaddressid'      // primary key ใน tax_address
+    );
+}
+
 }

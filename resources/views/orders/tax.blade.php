@@ -3,144 +3,278 @@
 @section('content')
 
 @php
-    use Carbon\Carbon;
-    $printTime = Carbon::now()->format('d/m/Y H:i');
+use Carbon\Carbon;
 
-    $vatRate = 0.07;
-    $priceBeforeVat = $order->netamount / (1 + $vatRate);
-    $vatAmount = $order->netamount - $priceBeforeVat;
+$printTime = Carbon::now()->format('d/m/Y H:i');
+$vatRate = 0.07;
+
+/* ------------------------
+   ค่าจากฐานข้อมูล
+------------------------ */
+$totalWithVat = $order->totalamount ?? 0;   // ราคารวมก่อนหักส่วนลด
+$discount     = $order->discount ?? 0;      // ส่วนลด
+$netTotal     = $order->netamount ?? 0;     // ยอดสุทธิหลังหักส่วนลด (รวม VAT แล้ว)
+
+/* ------------------------
+   คำนวณ VAT จากยอดสุทธิจริง
+------------------------ */
+$priceBeforeVat = $netTotal / (1 + $vatRate);
+$vatAmount      = $netTotal - $priceBeforeVat;
 @endphp
+
 
 <style>
 body{
     background:#f6efe9;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:"Sarabun","Segoe UI",sans-serif;
 }
+
 .invoice-wrapper{
     display:flex;
     justify-content:center;
-    margin:60px 0;
+    margin:50px 0;
 }
-.invoice-card{
-    width:800px;
+
+.invoice-outer{
+    width:900px;
     background:white;
-    border-radius:24px;
-    padding:50px;
-    box-shadow:0 20px 60px rgba(93,64,55,.15);
+    padding:30px;
+    border:3px solid #000;
 }
-.store-title{
-    font-size:26px;
-    font-weight:700;
-    color:#4e342e;
-    text-align:center;
+
+.invoice-inner{
+    border:2px solid #000;
+    padding:35px;
 }
-.invoice-type{
-    text-align:center;
-    font-size:18px;
-    font-weight:600;
-    margin-top:5px;
-    color:#5d4037;
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
 }
-.divider{
-    height:1px;
-    background:#eee;
-    margin:25px 0;
-}
-.section-title{
-    font-weight:600;
-    color:#5d4037;
-    margin-bottom:8px;
-}
-.info{
+
+.store-info{
     font-size:14px;
     line-height:1.7;
 }
-.summary{
-    text-align:right;
-    font-size:15px;
-}
-.total{
-    font-size:20px;
+
+.invoice-title{
+    text-align:center;
+    font-size:22px;
     font-weight:700;
-    margin-top:10px;
 }
-.button-group{
+
+.meta{
+    font-size:14px;
+    text-align:right;
+}
+
+.section{
+    margin-top:20px;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.table th,
+.table td{
+    border:1px solid #000;
+    padding:8px;
+    font-size:14px;
+}
+
+.table th{
+    background:#f0f0f0;
+}
+
+.summary{
+    margin-top:15px;
+    width:300px;
+    float:right;
+    font-size:14px;
+}
+
+.summary div{
     display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-top:35px;
+    justify-content:space-between;
+    padding:4px 0;
 }
+
+.summary .total{
+    font-weight:700;
+    font-size:16px;
+}
+
+.clearfix::after{
+    content:"";
+    display:block;
+    clear:both;
+}
+
+.sign-section{
+    margin-top:60px;
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+    font-size:14px;
+}
+
+.sign-box{
+    width:40%;
+}
+
+.sign-line{
+    margin-top:50px;
+    border-top:1px solid #000;
+    padding-top:5px;
+}
+
+.button-group{
+    margin-top:40px;
+    text-align:center;
+}
+
 .btn{
-    padding:12px 25px;
-    border-radius:30px;
+    padding:10px 25px;
+    border-radius:5px;
+    background:#5d4037;
+    color:white;
     text-decoration:none;
     font-weight:600;
-    color:white;
+    margin:0 5px;
 }
-.btn-back{
-    background:#8d6e63;
-}
-.btn-print{
-    background:#5d4037;
-}
+
 @media print{
-    .button-group{
-        display:none;
-    }
+    body{ background:white; }
+    .button-group{ display:none; }
 }
 </style>
 
 <div class="invoice-wrapper">
-<div class="invoice-card">
+<div class="invoice-outer">
+<div class="invoice-inner">
 
-<div class="store-title">FURNITURE STORE</div>
-<div class="invoice-type">ใบกำกับภาษี (Tax Invoice)</div>
+{{-- Header --}}
+<div class="header">
+    <div class="store-info">
+        <strong>FURNITURE STORE</strong><br>
+        123 ถนนสุขุมวิท แขวงคลองตัน กรุงเทพฯ 10110 <br>
+        เลขประจำตัวผู้เสียภาษี 0100000000000 <br>
+        โทร 02-000-0000
+    </div>
 
-<div class="divider"></div>
-
-<div class="section-title">ข้อมูลลูกค้า</div>
-<div class="info">
-    ชื่อบริษัท: {{ $order->companyname }} <br>
-    ที่อยู่ออกใบกำกับ: {{ $order->taxid}} <br>
-    เลขประจำตัวผู้เสียภาษี: {{ $order->selleraddress}}
-</div>
-
-<div class="divider"></div>
-<div class="section-title">รายละเอียดการสั่งซื้อ</div>
-<div class="info">
-    เลขที่คำสั่งซื้อ: {{ $order->orderid }} <br>
-    วันที่สั่งซื้อ: {{ Carbon::parse($order->orderdate)->format('d/m/Y H:i') }} <br>
-    วันที่พิมพ์: {{ $printTime }}
-</div>
-
-<div class="divider"></div>
-
-<div class="summary">
-    <div>มูลค่าสินค้าก่อนภาษี: ฿{{ number_format($priceBeforeVat,2) }}</div>
-    <div>ภาษีมูลค่าเพิ่ม 7%: ฿{{ number_format($vatAmount,2) }}</div>
-    <div class="total">
-        รวมทั้งสิ้น (รวม VAT): ฿{{ number_format($order->netamount,2) }}
+    <div class="meta">
+        <div><strong>Invoice ID:</strong> {{ $order->orderid }}</div>
+        <div><strong>วันที่:</strong> {{ Carbon::parse($order->orderdate)->format('d/m/Y') }}</div>
     </div>
 </div>
 
-<div class="divider"></div>
+<div class="invoice-title">
+    ใบกำกับภาษี (Tax Invoice)
+</div>
 
-<div style="text-align:center; font-size:13px;">
-    เอกสารฉบับนี้เป็นใบกำกับภาษีอย่างย่อ
+<hr>
+
+{{-- ผู้ซื้อ --}}
+<div class="section">
+    <strong>ผู้ซื้อ</strong><br>
+    ชื่อบริษัท/ลูกค้า: {{ $order->companyname ?? $order->customername }} <br>
+    ที่อยู่: {{ $order->selleraddress ?? $order->address }} <br>
+    เลขประจำตัวผู้เสียภาษี: {{ $order->taxid ?? '-' }} <br>
+    โทร: {{ $order->tel ?? '-' }}
+</div>
+
+{{-- ตารางสินค้า --}}
+<table class="table">
+    <thead>
+        <tr>
+            <th width="5%">ลำดับ</th>
+            <th width="45%">รายการ</th>
+            <th width="10%">จำนวน</th>
+            <th width="20%">ราคาต่อหน่วย</th>
+            <th width="20%">จำนวนเงิน</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($details as $index => $item)
+        <tr>
+            <td align="center">{{ $index+1 }}</td>
+            <td>{{ $item->productname }}</td>
+            <td align="center">{{ $item->quantity }}</td>
+            <td align="right">{{ number_format($item->price,2) }}</td>
+            <td align="right">{{ number_format($item->subtotal,2) }}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<div class="summary">
+
+    <div>
+        <span>ราคาสินค้ารวม (รวม VAT)</span>
+        <span>{{ number_format($totalWithVat,2) }}</span>
+    </div>
+
+    <div>
+        <span>ส่วนลด</span>
+        <span>- {{ number_format($discount,2) }}</span>
+    </div>
+
+    <div>
+        <span>ยอดสุทธิหลังหักส่วนลด</span>
+        <span>{{ number_format($netTotal,2) }}</span>
+    </div>
+
+    <hr>
+
+    <div>
+        <span>ภาษีมูลค่าเพิ่ม 7%</span>
+        <span>{{ number_format($vatAmount,2) }}</span>
+    </div>
+
+    <div>
+        <span>ราคาก่อน VAT</span>
+        <span>{{ number_format($priceBeforeVat,2) }}</span>
+    </div>
+
+    <div class="total">
+        <span>จำนวนเงินทั้งสิ้น</span>
+        <span>{{ number_format($netTotal,2) }}</span>
+    </div>
+
+</div>
+
+
+<div class="clearfix"></div>
+
+{{-- ลายเซ็น --}}
+<div class="sign-section">
+    <div class="sign-box">
+        ลงชื่อ........................................ ผู้รับสินค้า
+        <div class="sign-line">
+            ( {{ $order->customername }} )
+        </div>
+    </div>
+
+    <div class="sign-box">
+        ลงชื่อ........................................ ผู้ขาย
+        <div class="sign-line">
+            ( FURNITURE STORE )
+        </div>
+    </div>
 </div>
 
 <div class="button-group">
-    <a href="{{ route('orders.show',$order->orderid) }}"
-       class="btn btn-back">
-        ← กลับ
-    </a>
-
-    <button onclick="window.print()"
-            class="btn btn-print">
-        🖨 พิมพ์ใบกำกับภาษี
-    </button>
+    <a href="{{ route('orders.show',$order->orderid) }}" class="btn">← กลับ</a>
+    <a href="#" onclick="window.print()" class="btn">🖨 พิมพ์</a>
 </div>
 
+</div>
 </div>
 </div>
 

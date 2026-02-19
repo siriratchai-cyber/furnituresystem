@@ -6,6 +6,15 @@
     use Carbon\Carbon;
 
     $printTime = Carbon::now('Asia/Bangkok')->format('d/m/Y H:i');
+    $vatRate = 0.07;
+
+    $totalWithVat = $order->totalamount ?? 0;   // ราคารวมก่อนหักส่วนลด
+    $discount     = $order->discount ?? 0;
+    $netTotal     = $order->netamount ?? 0;     // ยอดสุทธิ (รวม VAT แล้ว)
+
+    // คำนวณย้อน VAT จากยอดสุทธิ
+    $priceBeforeVat = $netTotal / (1 + $vatRate);
+    $vatAmount      = $netTotal - $priceBeforeVat;
 @endphp
 
 <style>
@@ -176,19 +185,39 @@ td{
 <div class="divider"></div>
 
 <div class="summary-row">
-    <span>ยอดรวม</span>
-    <span>{{ number_format($order->totalamount,2) }}</span>
+    <span>ราคาสินค้ารวม (รวม VAT)</span>
+    <span>{{ number_format($totalWithVat,2) }}</span>
 </div>
 
 <div class="summary-row">
     <span>ส่วนลด</span>
-    <span>{{ number_format($order->discount,2) }}</span>
+    <span>- {{ number_format($discount,2) }}</span>
 </div>
 
-<div class="summary-row total">
-    <span>ยอดสุทธิ</span>
-    <span>{{ number_format($order->netamount,2) }} บาท</span>
+<div class="summary-row">
+    <span>ยอดสุทธิหลังหักส่วนลด</span>
+    <span>{{ number_format($netTotal,2) }}</span>
 </div>
+
+<div class="divider"></div>
+
+<div class="summary-row">
+    <span>ราคาก่อน VAT</span>
+    <span>{{ number_format($priceBeforeVat,2) }}</span>
+</div>
+
+<div class="summary-row">
+    <span>ภาษีมูลค่าเพิ่ม 7%</span>
+    <span>{{ number_format($vatAmount,2) }}</span>
+</div>
+
+<div class="divider"></div>
+
+<div class="summary-row total">
+    <span>จำนวนเงินทั้งสิ้น</span>
+    <span>{{ number_format($netTotal,2) }} บาท</span>
+</div>
+
 
 <div class="divider"></div>
 

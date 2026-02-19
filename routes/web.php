@@ -91,3 +91,22 @@ Route::get('/dashboard/data', [App\Http\Controllers\DashboardController::class, 
     ->name('dashboard.data')
     ->middleware('check.login');
 
+Route::get('/register',[AuthController::class,'showRegister'])
+    ->name('register');
+
+Route::post('/register',[AuthController::class,'register'])
+    ->name('register.process');
+
+
+Route::get('/sales-summary', [DashboardController::class, 'summaryPage'])
+    ->name('sales.summary')
+    ->middleware(['check.login','check.owner']);
+
+
+Route::get('/sales-summary-data', [DashboardController::class, 'salesSummaryData'])
+    ->name('sales.summary.data')
+    ->middleware(['check.login','check.owner']);
+
+
+
+

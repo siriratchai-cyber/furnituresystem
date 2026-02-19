@@ -5,219 +5,220 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
+/* ===============================
+   LUXURY COMPACT VERSION
+================================ */
+
+:root{
+    --brown-dark:#5a3e2b;
+    --brown-main:#8b5e3c;
+    --brown-light:#c7a17a;
+}
+
+*{ box-sizing:border-box; }
+
 body{
     margin:0;
-    background:linear-gradient(135deg,#f5f1ea,#efe7dd);
     font-family:'Segoe UI',sans-serif;
+    background:
+        radial-gradient(circle at 15% 15%, rgba(199,161,122,0.18), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139,94,60,0.15), transparent 40%),
+        linear-gradient(135deg,#faf7f3,#efe7dd);
+    color:#3e342b;
 }
 
 .container{
-    max-width:1200px;
-    margin:60px auto;
-    padding:0 20px;
+    max-width:780px;
+    margin:70px auto;
+    padding:0 40px;
 }
 
-/* ===== Profile Card ===== */
+/* ================= PROFILE ================= */
+
 .profile-card{
-    background:white;
-    padding:35px;
-    border-radius:25px;
-    box-shadow:0 25px 60px rgba(0,0,0,0.07);
+    width:220px;
+    height:220px;
+    margin:0 auto 45px auto;
+    border-radius:50%;
     display:flex;
     flex-direction:column;
+    justify-content:center;
     align-items:center;
     text-align:center;
-    margin-bottom:50px;
     position:relative;
+    background:linear-gradient(145deg,#ffffff,#f2e9df);
+    box-shadow:
+        0 25px 60px rgba(139,94,60,0.25),
+        inset 0 0 25px rgba(199,161,122,0.25);
 }
 
 .avatar-large{
-    width:90px;
-    height:90px;
+    width:70px;
+    height:70px;
     border-radius:50%;
-    background:linear-gradient(135deg,#8b5e3c,#c7a17a);
+    background:linear-gradient(135deg,var(--brown-main),var(--brown-light));
     display:flex;
     align-items:center;
     justify-content:center;
     color:white;
-    font-size:40px;
-    margin-bottom:15px;
+    font-size:28px;
+    margin-bottom:10px;
+    box-shadow:0 8px 20px rgba(139,94,60,0.5);
 }
 
-.profile-name{
-    font-size:20px;
-    font-weight:600;
-    color:#4b3f35;
-}
-
-.profile-role{
-    font-size:14px;
-    color:#8c7b6a;
-}
-
-.profile-tel{
-    font-size:13px;
-    color:#a08b7c;
-}
+.profile-name{ font-size:18px;font-weight:600; }
+.profile-role{ font-size:13px;color:#8c7b6a; }
+.profile-tel{ font-size:12px;color:#a08b7c; }
 
 .logout-btn{
     position:absolute;
-    right:25px;
-    top:25px;
-    padding:8px 18px;
+    bottom:-15px;
+    right:50%;
+    transform:translateX(50%);
     border:none;
-    border-radius:25px;
-    background:#6b4f3a;
+    padding:6px 16px;
+    border-radius:30px;
+    background:linear-gradient(135deg,var(--brown-dark),var(--brown-main));
     color:white;
     cursor:pointer;
-    font-size:13px;
+    box-shadow:0 8px 20px rgba(90,62,43,0.4);
 }
 
-/* ===== KPI ===== */
+/* ================= KPI ================= */
+
 .kpi-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:25px;
-    margin-bottom:50px;
-}
-
-.card{
-    background:white;
-    border-radius:20px;
-    padding:30px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.05);
-    transition:all .3s ease;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 20px 50px rgba(0,0,0,0.08);
-}
-
-.card h2{
-    margin-top:10px;
-    font-size:28px;
-    color:#6b4f3a;
-}
-
-/* ===== Chart ===== */
-.chart-card{
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
     margin-bottom:40px;
 }
 
-/* ===== Table ===== */
+.card{
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(10px);
+    border-radius:20px;
+    padding:16px;
+    border:1px solid rgba(255,255,255,0.4);
+    box-shadow:0 15px 40px rgba(139,94,60,0.15);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 25px 50px rgba(139,94,60,0.25);
+}
+
+.kpi-grid .card{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    height:110px;
+}
+
+.kpi-grid .card h2{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--brown-dark),var(--brown-light));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+canvas{
+    margin-top:15px;
+    max-height:180px;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
     margin-top:15px;
+    border-radius:16px;
+    overflow:hidden;
 }
 
 th{
-    text-align:left;
     padding:12px;
-    background:#f3ede6;
-    color:#6b4f3a;
-    font-weight:600;
+    background:linear-gradient(135deg,var(--brown-dark),var(--brown-main));
+    color:white;
+    font-weight:500;
 }
 
 td{
     padding:12px;
     border-bottom:1px solid #eee;
+    background:white;
 }
 
-td:last-child{
-    color:#c0392b;
-    font-weight:bold;
-}
+tr:hover td{ background:#f9f4ee; }
 
-/* ===== Toast ===== */
 .toast-box{
     position:fixed;
-    top:30px;
-    right:30px;
-    background:#6b4f3a;
+    top:25px;
+    left:25px;
+    padding:14px 18px;
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--brown-dark),var(--brown-main));
     color:white;
-    padding:18px 25px;
-    border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,0.2);
+    font-size:13px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.3);
     display:none;
-    z-index:9999;
-    font-size:14px;
 }
+
 </style>
 
 
 <div class="container">
 
-   <div class="profile-card">
-
-    <div class="avatar-large">
-        👤
-    </div>
-
-    <div class="profile-name">
-        {{ session('employee_name') }}
-    </div>
-
-    <div class="profile-role">
-        {{ session('role') ?? '-' }}
-    </div>
-
-    <div class="profile-tel">
-        📞 {{ session('tel') ?? '-' }}
-    </div>
+<div class="profile-card">
+    <div class="avatar-large">👤</div>
+    <div class="profile-name">{{ session('employee_name') }}</div>
+    <div class="profile-role">{{ session('role') ?? '-' }}</div>
+    <div class="profile-tel">📞 {{ session('tel') ?? '-' }}</div>
 
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="logout-btn">
-            Logout
-        </button>
+        <button type="submit" class="logout-btn">Logout</button>
     </form>
-
 </div>
 
-
-</div>
-
-
-    <!-- KPI -->
-    <div class="kpi-grid">
-        <div class="card">
-            <div>รอดำเนินการ</div>
-            <h2 id="pending">0</h2>
-        </div>
-        <div class="card">
-            <div>ชำระแล้ว</div>
-            <h2 id="paid">0</h2>
-        </div>
-        <div class="card">
-            <div>ยอดขายวันนี้</div>
-            <h2 id="todaySales">0 ฿</h2>
-        </div>
-    </div>
-
-
-    <!-- CHART -->
+<div class="kpi-grid">
     <div class="card">
-        <h4>ยอดขายวันนี้</h4>
-        <canvas id="salesChart" height="100"></canvas>
+        <div>รอดำเนินการ</div>
+        <h2 id="pending">0</h2>
     </div>
-
-
-    <!-- LOW STOCK -->
-    <div class="card" style="margin-top:30px;">
-        <h4>สินค้าใกล้หมด</h4>
-        <table width="100%" id="stockTable"></table>
+    <div class="card">
+        <div>ชำระแล้ว</div>
+        <h2 id="paid">0</h2>
     </div>
+    <div class="card">
+        <div>ยอดขายวันนี้</div>
+        <h2 id="todaySales">0 ฿</h2>
+    </div>
+</div>
+
+<div class="card">
+    <h4>ยอดขายวันนี้</h4>
+    <canvas id="salesChart"></canvas>
+</div>
+
+<div class="card" style="margin-top:25px;">
+    <h4>สินค้าใกล้หมด</h4>
+    <table id="stockTable"></table>
+</div>
 
 </div>
 
 <div class="toast-box" id="toast"></div>
 
-
 <script>
 
 let chart;
+
+function formatNumber(num){
+    return new Intl.NumberFormat('th-TH').format(num);
+}
 
 function loadDashboard(){
 
@@ -225,14 +226,12 @@ function loadDashboard(){
     .then(res => res.json())
     .then(data => {
 
-        // KPI
         document.getElementById('pending').innerText = data.summary.pending ?? 0;
         document.getElementById('paid').innerText = data.summary.paid ?? 0;
-        document.getElementById('todaySales').innerText = data.todaySales + " ฿";
+        document.getElementById('todaySales').innerText = formatNumber(data.todaySales) + " ฿";
 
-        // Low stock table
         let table = "<tr><th>ชื่อสินค้า</th><th>คงเหลือ</th></tr>";
-        data.lowStock.forEach(p => {
+        data.lowStock.forEach(p=>{
             table += `<tr>
                         <td>${p.productname}</td>
                         <td style="color:red;font-weight:bold;">${p.stock}</td>
@@ -240,7 +239,6 @@ function loadDashboard(){
         });
         document.getElementById('stockTable').innerHTML = table;
 
-        // Toast
         if(data.critical.length > 0){
             let msg = "สินค้าใกล้หมดมาก: ";
             data.critical.forEach(p=>{
@@ -248,35 +246,58 @@ function loadDashboard(){
             });
             let toast = document.getElementById('toast');
             toast.innerText = msg;
-            toast.style.display = 'block';
+            toast.style.display='block';
             setTimeout(()=> toast.style.display='none',5000);
         }
 
-        // Chart
+        const todayLabel = new Date().toLocaleDateString('en-US',{ weekday:'short' });
+
+        const colors = data.chart.labels.map(label =>
+            label === todayLabel ? '#8b5e3c' : '#c7a17a'
+        );
+
         if(!chart){
+
             const ctx = document.getElementById('salesChart');
-            chart = new Chart(ctx, {
+
+            chart = new Chart(ctx,{
                 type:'bar',
                 data:{
-                    labels:['ยอดขายวันนี้'],
+                    labels:data.chart.labels,
                     datasets:[{
-                        data:[data.todaySales]
+                        label:'ยอดขาย 7 วัน',
+                        data:data.chart.data,
+                        backgroundColor:colors,
+                        borderRadius:8
                     }]
+                },
+                options:{
+                    plugins:{ legend:{ display:false }},
+                    scales:{
+                        y:{
+                            beginAtZero:true,
+                            ticks:{
+                                callback:value =>
+                                    new Intl.NumberFormat('th-TH').format(value)
+                            }
+                        }
+                    }
                 }
             });
+
         }else{
-            chart.data.datasets[0].data = [data.todaySales];
+
+            chart.data.labels = data.chart.labels;
+            chart.data.datasets[0].data = data.chart.data;
+            chart.data.datasets[0].backgroundColor = colors;
             chart.update();
         }
 
     });
 }
 
-// โหลดครั้งแรก
 loadDashboard();
-
-// refresh ทุก 30 วิ (ไม่ reload หน้า)
-setInterval(loadDashboard, 30000);
+setInterval(loadDashboard,30000);
 
 </script>
 

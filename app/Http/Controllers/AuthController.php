@@ -31,9 +31,12 @@ class AuthController extends Controller
             ->where('empname', $request->empname)
             ->first();
 
-        if (!$employee || !Hash::check($request->password, $employee->password)) {
-            return back()->with('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-        }
+        if (!$employee || !$employee->password || 
+    !Hash::check($request->password, $employee->password)) {
+
+    return back()->with('error','ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+}
+
 
         Session::put('employeeid', $employee->employeeid);
 Session::put('employee_name', $employee->empname); // แก้ชื่อ key
@@ -88,4 +91,50 @@ Session::put('tel', $employee->tel); // เพิ่มบรรทัดนี�
         Session::flush();
         return redirect('/login');
     }
+
+    /* ===============================
+   REGISTER PAGE
+================================ */
+public function showRegister()
+{
+    return view('register');
+}
+
+/* ===============================
+   REGISTER PROCESS
+================================ */
+public function register(Request $request)
+{
+    $request->validate([
+        'empname'  => 'required',
+        'tel'      => 'required',
+        'password' => 'required|min:6|confirmed'
+    ]);
+
+    // 🔎 ตรวจสอบว่าพนักงานมีอยู่ในระบบแล้วหรือไม่
+    $employee = DB::table('employee')
+        ->where('empname', $request->empname)
+        ->where('tel', $request->tel)
+        ->first();
+
+    if (!$employee) {
+        return back()->with('error', 'ไม่พบข้อมูลพนักงานในระบบ');
+    }
+
+    // ❗ ถ้ามี password แล้ว แปลว่าเคย activate แล้ว
+    if ($employee->password !== null) {
+        return back()->with('error', 'บัญชีนี้ถูกตั้งรหัสผ่านแล้ว');
+    }
+
+    // 🔐 Hash password แล้วอัปเดต
+    DB::table('employee')
+        ->where('employeeid', $employee->employeeid)
+        ->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+    return redirect('/login')
+        ->with('success', 'ตั้งรหัสผ่านสำเร็จ สามารถเข้าสู่ระบบได้');
+}
+
 }

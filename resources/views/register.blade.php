@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>เข้าสู่ระบบ | Furniture POS</title>
+<title>ลงทะเบียน | Furniture POS</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -113,30 +113,33 @@ button:hover{
     margin-bottom:15px;
 }
 
+.success{
+    background:#e6f4ea;
+    color:#256029;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+.link-group{
+    margin-top:18px;
+    text-align:center;
+    font-size:13px;
+}
+
+.link-group a{
+    color:#7b5e3c;
+    text-decoration:none;
+    margin:0 8px;
+}
+
 .footer{
     margin-top:20px;
     text-align:center;
     font-size:12px;
     color:#a08f80;
 }
-
-.link-group{
-    margin-top:18px;
-    display:flex;
-    justify-content:space-between;
-    font-size:13px;
-}
-
-.link-group a{
-    text-decoration:none;
-    color:#7b5e3c;
-    transition:.2s;
-}
-
-.link-group a:hover{
-    color:#5a3f25;
-}
-
 </style>
 </head>
 
@@ -146,20 +149,35 @@ button:hover{
 <div class="card">
 
 <div class="logo">Furniture POS</div>
-<div class="subtitle">ระบบจัดการร้านเฟอร์นิเจอร์</div>
+<div class="subtitle">ตั้งรหัสผ่านสำหรับพนักงานใหม่</div>
 
+{{-- Validation Errors --}}
+@if ($errors->any())
+    <div class="error">
+        @foreach ($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+    </div>
+@endif
+
+{{-- Session Error --}}
 @if(session('error'))
     <div class="error">
         {{ session('error') }}
     </div>
 @endif
 
-<form method="POST" action="{{ route('login.process') }}">
+<form method="POST" action="{{ url('/register') }}">
 @csrf
 
 <div class="input-group">
     <label>ชื่อพนักงาน</label>
-    <input type="text" name="empname" required autofocus>
+    <input type="text" name="empname" value="{{ old('empname') }}" required>
+</div>
+
+<div class="input-group">
+    <label>เบอร์โทร</label>
+    <input type="text" name="tel" value="{{ old('tel') }}" required>
 </div>
 
 <div class="input-group">
@@ -167,15 +185,20 @@ button:hover{
     <input type="password" name="password" required>
 </div>
 
+<div class="input-group">
+    <label>ยืนยันรหัสผ่าน</label>
+    <input type="password" name="password_confirmation" required>
+</div>
+
 <button type="submit">
-    เข้าสู่ระบบ
+    ลงทะเบียน
 </button>
 
 <div class="link-group">
-    <a href="{{ route('password.forgot') }}">ลืมรหัสผ่าน?</a>
-    <a href="{{ route('register') }}">สร้างบัญชี</a>
+    <a href="{{ route('login') }}">กลับหน้า Login</a>
 </div>
 
+</form>
 
 <div class="footer">
     © {{ date('Y') }} Furniture Store System

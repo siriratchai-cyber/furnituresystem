@@ -272,6 +272,7 @@ td{
 
 </div>
 
+
 <!-- RIGHT PAYMENT -->
 <div>
 <div class="payment-card">
@@ -279,76 +280,111 @@ td{
 <div class="pay-title">ชำระเงิน</div>
 
 <div class="qr-box">
-<img src="{{ asset('images/พร้อมเพย์.png') }}">
-<div>สแกนเพื่อชำระเงิน</div>
+    <img src="{{ asset('images/พร้อมเพย์.png') }}">
+    <div>สแกนเพื่อชำระเงิน</div>
 </div>
 
 <div class="total-box">
-ยอดที่ต้องรับ
-<div class="amount">
-{{ number_format($order->netamount,2) }} บาท
-</div>
+    ยอดที่ต้องรับ
+    <div class="amount">
+        {{ number_format($order->netamount,2) }} บาท
+    </div>
 </div>
 
+{{-- ============================= --}}
+{{-- ===== สถานะรอดำเนินการ ===== --}}
+{{-- ============================= --}}
 @if($order->payment_status === 'pending')
 
-<form id="payForm"
-      action="{{ route('orders.pay',$order->orderid) }}"
-      method="POST">
-@csrf
+    {{-- ===== ฟอร์มชำระเงิน ===== --}}
+    <form id="payForm"
+          action="{{ route('orders.pay',$order->orderid) }}"
+          method="POST">
+        @csrf
 
-<div class="input-group">
-<label>จำนวนเงินที่ได้รับ</label>
-<input type="number"
-       id="received"
-       name="received_amount"
-       step="0.01"
-       required>
-</div>
+        <div class="input-group">
+            <label>ช่องทางชำระเงิน</label>
+            <select name="payment_method" required>
+                <option value="">-- เลือกช่องทาง --</option>
+                <option value="cash">เงินสด</option>
+                <option value="transfer">โอนเงิน</option>
+                <option value="card">บัตรเครดิต</option>
+            </select>
+        </div>
 
-<div class="input-group">
-<label>เงินทอน</label>
-<input type="text" id="change" readonly>
-</div>
+        <div class="input-group">
+            <label>รับเงินมา</label>
+            <input type="number"
+                   id="received"
+                   name="received_amount"
+                   step="0.01"
+                   placeholder="0.00"
+                   required>
+        </div>
 
-<div class="input-group">
-<label>ช่องทางการชำระ</label>
-<select name="payment_method" required>
-<option value="">-- เลือก --</option>
-<option value="cash">เงินสด</option>
-<option value="promptpay">PromptPay</option>
-<option value="transfer">โอนเงิน</option>
-</select>
-</div>
+        <div class="input-group">
+            <label>เงินทอน</label>
+            <input type="text"
+                   id="change"
+                   readonly
+                   value="0.00">
+        </div>
 
-<button type="button"
-        id="payBtn"
-        class="btn-action btn-success">
-    ชำระเงินเสร็จสิ้น
-</button>
+        <button type="button"
+                id="payBtn"
+                class="btn-action btn-success">
+            ยืนยันการชำระเงิน
+        </button>
 
-</form>
+    </form>
 
-<form id="cancelForm"
-      action="{{ route('orders.cancel',$order->orderid) }}"
-      method="POST">
-@csrf
-</form>
+    {{-- ===== ฟอร์มยกเลิก ===== --}}
+    <form id="cancelForm"
+          action="{{ route('orders.cancel',$order->orderid) }}"
+          method="POST">
+        @csrf
+    </form>
 
-<button type="button"
-        id="cancelBtn"
-        class="btn-action btn-danger">
-    ยกเลิกคำสั่งซื้อ
-</button>
+    <button type="button"
+            id="cancelBtn"
+            class="btn-action btn-danger">
+        ยกเลิกคำสั่งซื้อ
+    </button>
 
-@else
-<div style="text-align:center;font-weight:600;">
-ไม่สามารถดำเนินการได้ (สถานะถูกปิดแล้ว)
-</div>
+
+{{-- ============================= --}}
+{{-- ===== สถานะชำระแล้ว ===== --}}
+{{-- ============================= --}}
+@elseif($order->payment_status === 'paid')
+
+    <div style="
+        text-align:center;
+        padding:15px;
+        font-weight:600;
+        color:#2e7d32;">
+        ชำระเงินเรียบร้อยแล้ว
+    </div>
+
+
+{{-- ============================= --}}
+{{-- ===== สถานะยกเลิก ===== --}}
+{{-- ============================= --}}
+@elseif($order->payment_status === 'cancelled')
+
+    <div style="
+        text-align:center;
+        padding:15px;
+        font-weight:600;
+        color:#c62828;">
+        คำสั่งซื้อถูกยกเลิกแล้ว
+    </div>
+
 @endif
 
 </div>
 </div>
+
+
 
 </div>
 </div>
@@ -376,7 +412,7 @@ if(payBtn){
         const method = document.querySelector('[name="payment_method"]').value;
 
         if(received < total){
-            Swal.fire('จำนวนเงินไม่พอ','กรุณากรอกเงินให้ครบ','error');
+            Swal.fire('จำนวนเงินไม่พอ','กรุณากรอกข้อมูลให้ครบ','error');
             return;
         }
         if(!method){

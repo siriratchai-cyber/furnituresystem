@@ -75,6 +75,99 @@ border:1px solid #d6c2ad !important;
 .ts-dropdown{
 border-radius:12px !important;
 }
+
+/* =====================================
+   MOBILE PREMIUM HORIZONTAL SCROLL
+===================================== */
+
+.table-scroll-wrapper{
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.table-scroll{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-behavior:smooth;
+}
+
+/* บังคับตารางให้กว้างกว่า mobile */
+.table-scroll table{
+    min-width:820px;
+}
+
+/* Scrollbar บางแบบ iOS */
+.table-scroll::-webkit-scrollbar{
+    height:6px;
+}
+
+.table-scroll::-webkit-scrollbar-track{
+    background:transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb{
+    background:rgba(120,90,60,0.35);
+    border-radius:20px;
+}
+
+/* Fade ซ้าย */
+.table-scroll-wrapper::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:25px;
+    height:100%;
+    background:linear-gradient(to right,#fff,transparent);
+    pointer-events:none;
+}
+
+/* Fade ขวา */
+.table-scroll-wrapper::after{
+    content:"";
+    position:absolute;
+    right:0;
+    top:0;
+    width:25px;
+    height:100%;
+    background:linear-gradient(to left,#fff,transparent);
+    pointer-events:none;
+}
+
+/* ปรับเฉพาะมือถือ */
+@media (max-width:768px){
+
+    .table-scroll{
+        padding-bottom:6px;
+    }
+
+    .table-scroll table{
+        min-width:900px; /* ให้เลื่อนได้ชัดเจน */
+    }
+
+}
+.scroll-hint{
+    display:none;
+    font-size:13px;
+    text-align:center;
+    margin-bottom:8px;
+    color:#8b5e34;
+    font-weight:500;
+    opacity:0.85;
+}
+
+/* แสดงเฉพาะมือถือ */
+@media (max-width:768px){
+    .scroll-hint{
+        display:block;
+    }
+}
+
+
+
+
 </style>
 
 <div class="container mt-4">
@@ -141,7 +234,12 @@ placeholder="0105551234567">
 <div class="glass-card p-4 mb-4">
 <h5 class="mb-3 text-dark">เพิ่มสินค้า</h5>
 
-<table class="table text-center align-middle">
+<div class="table-scroll-wrapper">
+    
+
+    <div class="table-scroll" id="productScroll">
+        <table class="table text-center align-middle">
+
 <thead>
 <tr>
 <th width="30%">สินค้า (รหัส)</th>
@@ -153,7 +251,11 @@ placeholder="0105551234567">
 </tr>
 </thead>
 <tbody id="productBody"></tbody>
-</table>
+         </table>
+    </div>
+</div>
+
+<div class="scroll-hint">← เลื่อนเพื่อกรอกข้อมูล →</div>
 
 <button type="button" onclick="addRow()" class="btn btn-outline-brown">
 + เพิ่มสินค้า
@@ -212,7 +314,7 @@ row.innerHTML=`
 <select class="productSelect">
 <option value="">🔎 ค้นหา / เลือกสินค้า</option>
 ${productList.map(p=>{
-let stock=p.stockquantity??p.stock??0;
+let stock = parseFloat(p.stock) || 0;
 let price=p.price??0;
 return `<option value="${p.productid}"
 data-price="${price}"
@@ -233,9 +335,16 @@ ${stock <= 0 ? 'disabled' : ''}>
 document.getElementById("productBody").appendChild(row);
 
 new TomSelect(row.querySelector(".productSelect"),{
-create:false,
-sortField:{field:"text",direction:"asc"}
+    create:false,
+    sortField:{field:"text",direction:"asc"},
+    maxOptions: null,        // แสดงทั้งหมด
+    openOnFocus: true,       // คลิกแล้วเปิดทันที
+    allowEmptyOption: true,
+    searchField: ['text'],   // ค้นหาจากข้อความทั้งหมด
+        dropdownParent: 'body'
 });
+
+
 
 bindRow(row);
 }
