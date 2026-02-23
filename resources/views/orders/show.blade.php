@@ -188,7 +188,7 @@ td{
 <div class="header">
 <div>
 <div class="title">คำสั่งซื้อ #{{ $order->orderid }}</div>
-<div class="meta">วันที่ {{ $thaiTime }} | พนักงาน {{ $order->empname }}</div>
+<div class="meta">วันที่ {{ $thaiTime }} | ผู้ดำเนินการ {{ $order->empname }}</div>
 </div>
 
 @if($order->payment_status === 'paid')
