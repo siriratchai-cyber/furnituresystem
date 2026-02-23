@@ -122,16 +122,15 @@ class DashboardController extends Controller
             $prevStart = now()->subWeek()->startOfWeek();
             $prevEnd   = now()->subWeek()->endOfWeek()->endOfDay();
 
-        } elseif ($period === 'month') {
+        }elseif ($period === 'month') {
 
-            $start = now()->startOfMonth();
-            $end   = now()->endOfMonth()->endOfDay();
-            $step  = 'week';
+    $start = now()->startOfMonth();
+    $end   = now()->endOfMonth()->endOfDay();
+    $step  = 'week';   // แก้ให้ใช้ week ที่มีใน while
 
-            $prevStart = now()->subMonth()->startOfMonth();
-            $prevEnd   = now()->subMonth()->endOfMonth()->endOfDay();
-
-        } else {
+    $prevStart = now()->subMonth()->startOfMonth();
+    $prevEnd   = now()->subMonth()->endOfMonth()->endOfDay();
+}else {
 
             $start = now()->startOfYear();
             $end   = now()->endOfYear()->endOfDay();
@@ -172,21 +171,23 @@ class DashboardController extends Controller
                 $label      = $current->format('d/m');
                 $current->addDay();
 
-            } elseif ($step === 'week') {
+            }  elseif ($step === 'week') {
 
-                $rangeStart = $current->copy()->startOfWeek();
-                $rangeEnd   = $current->copy()->endOfWeek();
+    // สัปดาห์เริ่มจาก current จริง ๆ ไม่ใช้ startOfWeek()
+    $rangeStart = $current->copy();
 
-                if ($rangeStart->lt($start)) {
-                    $rangeStart = $start->copy();
-                }
-                if ($rangeEnd->gt($end)) {
-                    $rangeEnd = $end->copy();
-                }
+    // บวก 6 วันเพื่อให้ครบ 7 วัน
+    $rangeEnd = $current->copy()->addDays(6);
 
-                $label = $rangeStart->format('d/m') . ' - ' . $rangeEnd->format('d/m');
-                $current->addWeek();
+    // กันเลยเดือน
+    if ($rangeEnd->gt($end)) {
+        $rangeEnd = $end->copy();
+    }
 
+    $label = $rangeStart->format('d/m') . ' - ' . $rangeEnd->format('d/m');
+
+    // ขยับไปสัปดาห์ถัดไปแบบตรง ๆ
+    $current->addDays(7);
             } else {
 
                 $rangeStart = $current->copy()->startOfMonth();
