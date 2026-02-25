@@ -2,515 +2,519 @@
 
 @section('content')
 
-<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-body{
-background:linear-gradient(135deg,#f3ede7,#e6d5c3);
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
-}
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3ede7, #e6d5c3);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+        }
 
-.glass-card{
-background:#ffffff;
-border-radius:18px;
-box-shadow:0 8px 25px rgba(120,72,0,0.08);
-border:1px solid #eadfce;
-}
+        .glass-card {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(120, 72, 0, 0.08);
+            border: 1px solid #eadfce;
+        }
 
-input,select,textarea{
-border-radius:10px !important;
-border:1px solid #d6c2ad !important;
-}
+        input,
+        select,
+        textarea {
+            border-radius: 10px !important;
+            border: 1px solid #d6c2ad !important;
+        }
 
-input:focus,select:focus,textarea:focus{
-box-shadow:0 0 0 3px rgba(150,90,40,0.2) !important;
-border-color:#8b5e34 !important;
-}
+        input:focus,
+        select:focus,
+        textarea:focus {
+            box-shadow: 0 0 0 3px rgba(150, 90, 40, 0.2) !important;
+            border-color: #8b5e34 !important;
+        }
 
-.pos-summary{
-background:linear-gradient(135deg,#6f4e37,#5c3d2e);
-color:white;
-border-radius:18px;
-padding:25px;
-}
+        .pos-summary {
+            background: linear-gradient(135deg, #6f4e37, #5c3d2e);
+            color: white;
+            border-radius: 18px;
+            padding: 25px;
+        }
 
-.btn-brown{background:#8b5e34;color:white;border:none;}
-.btn-brown:hover{background:#6f4e37;}
+        .btn-brown {
+            background: #8b5e34;
+            color: white;
+            border: none;
+        }
 
-.btn-outline-brown{
-border:1px solid #8b5e34;
-color:#8b5e34;
-}
-.btn-outline-brown:hover{
-background:#8b5e34;
-color:white;
-}
+        .btn-brown:hover {
+            background: #6f4e37;
+        }
 
-.invoice-box{
-display:none;
-background:#f7efe6;
-border-radius:14px;
-padding:18px;
-margin-top:15px;
-}
+        .btn-outline-brown {
+            border: 1px solid #8b5e34;
+            color: #8b5e34;
+        }
 
-/* Table style */
-table thead{
-background:#f3e7da;
-}
-table tbody tr{
-transition:0.2s;
-}
-table tbody tr:hover{
-background:#faf4ee;
-}
+        .btn-outline-brown:hover {
+            background: #8b5e34;
+            color: white;
+        }
 
-/* TomSelect */
-.ts-control{
-border-radius:10px !important;
-border:1px solid #d6c2ad !important;
-}
-.ts-dropdown{
-border-radius:12px !important;
-}
+        .invoice-box {
+            display: none;
+            background: #f7efe6;
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 15px;
+        }
 
-/* =====================================
-   MOBILE PREMIUM HORIZONTAL SCROLL
-===================================== */
+        /* Table style */
+        table thead {
+            background: #f3e7da;
+        }
 
-.table-scroll-wrapper{
-    position:relative;
-    border-radius:16px;
-    overflow:hidden;
-}
+        table tbody tr {
+            transition: 0.2s;
+        }
 
-.table-scroll{
-    overflow-x:auto;
-    overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scroll-behavior:smooth;
-}
+        table tbody tr:hover {
+            background: #faf4ee;
+        }
 
-/* บังคับตารางให้กว้างกว่า mobile */
-.table-scroll table{
-    min-width:820px;
-}
+        /* TomSelect */
+        .ts-control {
+            border-radius: 10px !important;
+            border: 1px solid #d6c2ad !important;
+        }
 
-/* Scrollbar บางแบบ iOS */
-.table-scroll::-webkit-scrollbar{
-    height:6px;
-}
+        .ts-dropdown {
+            border-radius: 12px !important;
+        }
 
-.table-scroll::-webkit-scrollbar-track{
-    background:transparent;
-}
+        /* =====================================
+       MOBILE PREMIUM HORIZONTAL SCROLL
+    ===================================== */
 
-.table-scroll::-webkit-scrollbar-thumb{
-    background:rgba(120,90,60,0.35);
-    border-radius:20px;
-}
+        .table-scroll-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+        }
 
-/* Fade ซ้าย */
-.table-scroll-wrapper::before{
-    content:"";
-    position:absolute;
-    left:0;
-    top:0;
-    width:25px;
-    height:100%;
-    background:linear-gradient(to right,#fff,transparent);
-    pointer-events:none;
-}
+        .table-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
 
-/* Fade ขวา */
-.table-scroll-wrapper::after{
-    content:"";
-    position:absolute;
-    right:0;
-    top:0;
-    width:25px;
-    height:100%;
-    background:linear-gradient(to left,#fff,transparent);
-    pointer-events:none;
-}
+        /* บังคับตารางให้กว้างกว่า mobile */
+        .table-scroll table {
+            min-width: 820px;
+        }
 
-/* ปรับเฉพาะมือถือ */
-@media (max-width:768px){
+        /* Scrollbar บางแบบ iOS */
+        .table-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
 
-    .table-scroll{
-        padding-bottom:6px;
-    }
+        .table-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-    .table-scroll table{
-        min-width:900px; /* ให้เลื่อนได้ชัดเจน */
-    }
+        .table-scroll::-webkit-scrollbar-thumb {
+            background: rgba(120, 90, 60, 0.35);
+            border-radius: 20px;
+        }
 
-}
-.scroll-hint{
-    display:none;
-    font-size:13px;
-    text-align:center;
-    margin-bottom:8px;
-    color:#8b5e34;
-    font-weight:500;
-    opacity:0.85;
-}
+        /* Fade ซ้าย */
+        .table-scroll-wrapper::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 25px;
+            height: 100%;
+            background: linear-gradient(to right, #fff, transparent);
+            pointer-events: none;
+        }
 
-/* แสดงเฉพาะมือถือ */
-@media (max-width:768px){
-    .scroll-hint{
-        display:block;
-    }
-}
+        /* Fade ขวา */
+        .table-scroll-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 25px;
+            height: 100%;
+            background: linear-gradient(to left, #fff, transparent);
+            pointer-events: none;
+        }
+
+        /* ปรับเฉพาะมือถือ */
+        @media (max-width:768px) {
+
+            .table-scroll {
+                padding-bottom: 6px;
+            }
+
+            .table-scroll table {
+                min-width: 900px;
+                /* ให้เลื่อนได้ชัดเจน */
+            }
+
+        }
+
+        .scroll-hint {
+            display: none;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #8b5e34;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        /* แสดงเฉพาะมือถือ */
+        @media (max-width:768px) {
+            .scroll-hint {
+                display: block;
+            }
+        }
+    </style>
+
+    <div class="container mt-4">
+        <h3 class="mb-4 fw-semibold text-dark">🧾 สร้างคำสั่งซื้อ</h3>
+
+        <form method="POST" action="{{ route('orders.store') }}" id="orderForm">
+            @csrf
+            <input type="hidden" name="status" value="pending">
+
+            <!-- ================= CUSTOMER ================= -->
+            <div class="glass-card p-4 mb-4">
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label>ชื่อลูกค้า</label>
+                        <input type="text" name="customer_name" class="form-control" placeholder="เช่น สมชาย ใจดี" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label>เบอร์โทร</label>
+                        <input type="text" name="tel" class="form-control" placeholder="0812345678">
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label>ที่อยู่ลูกค้า</label>
+                        <textarea name="customer_address" class="form-control" rows="2"
+                            placeholder="99/9 หมู่ 5 ต.บางรัก อ.เมือง จ.เชียงใหม่ 50000" required></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="needInvoice">
+                            <label class="form-check-label">ออกใบกำกับภาษี</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="invoice-box" id="invoiceForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>ชื่อบริษัท</label>
+                            <input type="text" name="tax_company" class="form-control" placeholder="บริษัท เอ บี ซี จำกัด">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label>เลขผู้เสียภาษี</label>
+                            <input type="text" name="tax_number" class="form-control" placeholder="0105551234567">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PRODUCT ================= -->
+            <div class="glass-card p-4 mb-4">
+                <h5 class="mb-3 text-dark">เพิ่มสินค้า</h5>
+
+                <div class="table-scroll-wrapper">
 
 
+                    <div class="table-scroll" id="productScroll">
+                        <table class="table text-center align-middle">
 
+                            <thead>
+                                <tr>
+                                    <th width="30%">สินค้า (รหัส)</th>
+                                    <th width="10%">Stock</th>
+                                    <th width="15%">จำนวน</th>
+                                    <th width="15%">ราคา</th>
+                                    <th width="15%">รวม</th>
+                                    <th width="10%">ลบ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productBody"></tbody>
+                        </table>
+                    </div>
+                </div>
 
-</style>
+                <div class="scroll-hint">← เลื่อนเพื่อกรอกข้อมูล →</div>
 
-<div class="container mt-4">
-<h3 class="mb-4 fw-semibold text-dark">🧾 สร้างคำสั่งซื้อ</h3>
+                <button type="button" onclick="addRow()" class="btn btn-outline-brown">
+                    + เพิ่มสินค้า
+                </button>
+            </div>
 
-<form method="POST" action="{{ route('orders.store') }}" id="orderForm">
-@csrf
-<input type="hidden" name="status" value="pending">
+            <!-- ================= SUMMARY ================= -->
+            <div class="pos-summary mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <h6>ยอดรวม</h6>
+                        <h4 id="totalText">0.00</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <label>ส่วนลด</label>
+                        <input type="number" id="discount" class="form-control" value="0" min="0">
+                    </div>
+                    <div class="col-md-4">
+                        <h6>ยอดสุทธิ</h6>
+                        <h4 id="netText">0.00</h4>
+                    </div>
+                </div>
+            </div>
 
-<!-- ================= CUSTOMER ================= -->
-<div class="glass-card p-4 mb-4">
-<div class="row">
+            <input type="hidden" name="products" id="products">
+            <input type="hidden" name="total" id="total">
+            <input type="hidden" name="netamount" id="net">
+            <input type="hidden" name="discount" id="discountHidden">
 
-<div class="col-md-6 mb-3">
-<label>ชื่อลูกค้า</label>
-<input type="text" name="customer_name" class="form-control"
-placeholder="เช่น สมชาย ใจดี" required>
-</div>
+            <div class="text-end mb-5">
+                <button type="button" onclick="cancelOrder()" class="btn btn-danger">
+                    ยกเลิก
+                </button>
+                <button type="submit" class="btn btn-brown">
+                    บันทึก
+                </button>
+            </div>
 
-<div class="col-md-6 mb-3">
-<label>เบอร์โทร</label>
-<input type="text" name="tel" class="form-control"
-placeholder="0812345678">
-</div>
-
-<div class="col-12 mb-3">
-<label>ที่อยู่ลูกค้า</label>
-<textarea name="customer_address"
-class="form-control"
-rows="2"
-placeholder="99/9 หมู่ 5 ต.บางรัก อ.เมือง จ.เชียงใหม่ 50000"
-required></textarea>
-</div>
-
-<div class="col-12">
-<div class="form-check mt-2">
-<input class="form-check-input" type="checkbox" id="needInvoice">
-<label class="form-check-label">ออกใบกำกับภาษี</label>
-</div>
-</div>
-
-</div>
-
-<div class="invoice-box" id="invoiceForm">
-<div class="row">
-<div class="col-md-6 mb-3">
-<label>ชื่อบริษัท</label>
-<input type="text" name="tax_company"
-class="form-control"
-placeholder="บริษัท เอ บี ซี จำกัด">
-</div>
-
-<div class="col-md-6 mb-3">
-<label>เลขผู้เสียภาษี</label>
-<input type="text" name="tax_number"
-class="form-control"
-placeholder="0105551234567">
-</div>
-</div>
-</div>
-</div>
-
-<!-- ================= PRODUCT ================= -->
-<div class="glass-card p-4 mb-4">
-<h5 class="mb-3 text-dark">เพิ่มสินค้า</h5>
-
-<div class="table-scroll-wrapper">
-    
-
-    <div class="table-scroll" id="productScroll">
-        <table class="table text-center align-middle">
-
-<thead>
-<tr>
-<th width="30%">สินค้า (รหัส)</th>
-<th width="10%">Stock</th>
-<th width="15%">จำนวน</th>
-<th width="15%">ราคา</th>
-<th width="15%">รวม</th>
-<th width="10%">ลบ</th>
-</tr>
-</thead>
-<tbody id="productBody"></tbody>
-         </table>
+        </form>
     </div>
-</div>
 
-<div class="scroll-hint">← เลื่อนเพื่อกรอกข้อมูล →</div>
+    <script>
 
-<button type="button" onclick="addRow()" class="btn btn-outline-brown">
-+ เพิ่มสินค้า
-</button>
-</div>
+        let productList = @json($products);
 
-<!-- ================= SUMMARY ================= -->
-<div class="pos-summary mb-4">
-<div class="row align-items-center">
-<div class="col-md-4">
-<h6>ยอดรวม</h6>
-<h4 id="totalText">0.00</h4>
-</div>
-<div class="col-md-4">
-<label>ส่วนลด</label>
-<input type="number" id="discount" class="form-control" value="0" min="0">
-</div>
-<div class="col-md-4">
-<h6>ยอดสุทธิ</h6>
-<h4 id="netText">0.00</h4>
-</div>
-</div>
-</div>
+        document.getElementById("needInvoice").addEventListener("change", function () {
+            document.getElementById("invoiceForm").style.display = this.checked ? "block" : "none";
+        });
 
-<input type="hidden" name="products" id="products">
-<input type="hidden" name="total" id="total">
-<input type="hidden" name="netamount" id="net">
-<input type="hidden" name="discount" id="discountHidden">
+        function addRow() {
 
-<div class="text-end mb-5">
-<button type="button" onclick="cancelOrder()" class="btn btn-danger">
-ยกเลิก
-</button>
-<button type="submit" class="btn btn-brown">
-บันทึก
-</button>
-</div>
+            let row = document.createElement("tr");
 
-</form>
-</div>
+            row.innerHTML = `
+    <td>
+    <select class="productSelect">
+    <option value="">🔎 ค้นหา / เลือกสินค้า</option>
+    ${productList.map(p => {
+                let stock = parseFloat(p.stock) || 0;
+                let price = p.price ?? 0;
+                return `<option value="${p.productid}"
+    data-price="${price}"
+    data-stock="${stock}"
+    ${stock <= 0 ? 'disabled' : ''}>
+    [${p.productid}] ${p.productname} ${stock <= 0 ? '(สินค้าหมด)' : ''}
+    </option>`;
+            }).join('')}
+    </select>
+    </td>
+    <td class="stock">0</td>
+    <td><input type="number" class="form-control qty" value="1" min="1"></td>
+    <td class="price">0.00</td>
+    <td class="subtotal">0.00</td>
+    <td><button type="button" onclick="removeRow(this)" class="btn btn-sm btn-danger">×</button></td>
+    `;
 
-<script>
+            document.getElementById("productBody").appendChild(row);
 
-let productList=@json($products);
-
-document.getElementById("needInvoice").addEventListener("change",function(){
-document.getElementById("invoiceForm").style.display=this.checked?"block":"none";
-});
-
-function addRow(){
-
-let row=document.createElement("tr");
-
-row.innerHTML=`
-<td>
-<select class="productSelect">
-<option value="">🔎 ค้นหา / เลือกสินค้า</option>
-${productList.map(p=>{
-let stock = parseFloat(p.stock) || 0;
-let price=p.price??0;
-return `<option value="${p.productid}"
-data-price="${price}"
-data-stock="${stock}"
-${stock <= 0 ? 'disabled' : ''}>
-[${p.productid}] ${p.productname} ${stock <= 0 ? '(สินค้าหมด)' : ''}
-</option>`;
-}).join('')}
-</select>
-</td>
-<td class="stock">0</td>
-<td><input type="number" class="form-control qty" value="1" min="1"></td>
-<td class="price">0.00</td>
-<td class="subtotal">0.00</td>
-<td><button type="button" onclick="removeRow(this)" class="btn btn-sm btn-danger">×</button></td>
-`;
-
-document.getElementById("productBody").appendChild(row);
-
-new TomSelect(row.querySelector(".productSelect"),{
-    create:false,
-    sortField:{field:"text",direction:"asc"},
-    maxOptions: null,        // แสดงทั้งหมด
-    openOnFocus: true,       // คลิกแล้วเปิดทันที
-    allowEmptyOption: true,
-    searchField: ['text'],   // ค้นหาจากข้อความทั้งหมด
-        dropdownParent: 'body'
-});
+            new TomSelect(row.querySelector(".productSelect"), {
+                create: false,
+                sortField: { field: "text", direction: "asc" },
+                maxOptions: null,        // แสดงทั้งหมด
+                openOnFocus: true,       // คลิกแล้วเปิดทันที
+                allowEmptyOption: true,
+                searchField: ['text'],   // ค้นหาจากข้อความทั้งหมด
+                dropdownParent: 'body'
+            });
 
 
 
-bindRow(row);
-}
+            bindRow(row);
+        }
 
-function bindRow(row){
+        function bindRow(row) {
 
-let select=row.querySelector(".productSelect");
-let qty=row.querySelector(".qty");
+            let select = row.querySelector(".productSelect");
+            let qty = row.querySelector(".qty");
 
-select.addEventListener("change",function(){
+            select.addEventListener("change", function () {
 
-let selected=this.selectedOptions[0];
-if(!selected.value) return;
+                let selected = this.selectedOptions[0];
+                if (!selected.value) return;
 
-let stock=parseInt(selected.dataset.stock)||0;
+                let stock = parseInt(selected.dataset.stock) || 0;
 
-if(stock <= 0){
-Swal.fire({
-icon:"error",
-title:"สินค้าหมดสต็อก"
-});
-select.tomselect.clear();
-return;
-}
+                if (stock <= 0) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "สินค้าหมดสต็อก"
+                    });
+                    select.tomselect.clear();
+                    return;
+                }
 
-let price=parseFloat(selected.dataset.price)||0;
+                let price = parseFloat(selected.dataset.price) || 0;
 
-row.dataset.price=price;
-row.dataset.stock=stock;
+                row.dataset.price = price;
+                row.dataset.stock = stock;
 
-row.querySelector(".stock").innerText=stock;
-row.querySelector(".price").innerText=price.toFixed(2);
+                row.querySelector(".stock").innerText = stock;
+                row.querySelector(".price").innerText = price.toFixed(2);
 
-calculate();
-});
+                calculate();
+            });
 
-qty.addEventListener("input",calculate);
-}
+            qty.addEventListener("input", calculate);
+        }
 
-function removeRow(btn){
-btn.closest("tr").remove();
-calculate();
-}
+        function removeRow(btn) {
+            btn.closest("tr").remove();
+            calculate();
+        }
 
-function calculate(){
+        function calculate() {
 
-let total=0;
+            let total = 0;
 
-document.querySelectorAll("#productBody tr").forEach(row=>{
+            document.querySelectorAll("#productBody tr").forEach(row => {
 
-let price=parseFloat(row.dataset.price)||0;
-let qty=parseInt(row.querySelector(".qty").value)||0;
-let stock=parseInt(row.dataset.stock)||0;
+                let price = parseFloat(row.dataset.price) || 0;
+                let qty = parseInt(row.querySelector(".qty").value) || 0;
+                let stock = parseInt(row.dataset.stock) || 0;
 
-if(qty<=0){
-row.querySelector(".qty").value=1;
-qty=1;
-}
+                if (qty <= 0) {
+                    row.querySelector(".qty").value = 1;
+                    qty = 1;
+                }
 
-if(stock>0 && qty>stock){
-row.querySelector(".qty").value=stock;
-qty=stock;
-}
+                if (stock > 0 && qty > stock) {
+                    row.querySelector(".qty").value = stock;
+                    qty = stock;
+                }
 
-let subtotal=price*qty;
-row.querySelector(".subtotal").innerText=subtotal.toFixed(2);
-total+=subtotal;
-});
+                let subtotal = price * qty;
+                row.querySelector(".subtotal").innerText = subtotal.toFixed(2);
+                total += subtotal;
+            });
 
-let discount=parseFloat(document.getElementById("discount").value)||0;
-if(discount>total){
-discount=total;
-document.getElementById("discount").value=total;
-}
+            let discount = parseFloat(document.getElementById("discount").value) || 0;
+            if (discount > total) {
+                discount = total;
+                document.getElementById("discount").value = total;
+            }
 
-let net=total-discount;
+            let net = total - discount;
 
-document.getElementById("totalText").innerText=total.toFixed(2);
-document.getElementById("netText").innerText=net.toFixed(2);
+            document.getElementById("totalText").innerText = total.toFixed(2);
+            document.getElementById("netText").innerText = net.toFixed(2);
 
-document.getElementById("total").value=total;
-document.getElementById("net").value=net;
-document.getElementById("discountHidden").value=discount;
-}
+            document.getElementById("total").value = total;
+            document.getElementById("net").value = net;
+            document.getElementById("discountHidden").value = discount;
+        }
 
-document.getElementById("discount").addEventListener("input",calculate);
+        document.getElementById("discount").addEventListener("input", calculate);
 
 
-/* ===========================
-   FIXED SUBMIT FLOW
-=========================== */
+        /* ===========================
+           FIXED SUBMIT FLOW
+        =========================== */
 
-document.getElementById("orderForm").addEventListener("submit", function(e){
+        document.getElementById("orderForm").addEventListener("submit", function (e) {
 
-calculate();
+            calculate();
 
-let items=[];
-let hasError=false;
+            let items = [];
+            let hasError = false;
 
-document.querySelectorAll("#productBody tr").forEach(row=>{
+            document.querySelectorAll("#productBody tr").forEach(row => {
 
-let select=row.querySelector(".productSelect");
+                let select = row.querySelector(".productSelect");
 
-let productId = select.tomselect
-? select.tomselect.getValue()
-: select.value;
+                let productId = select.tomselect
+                    ? select.tomselect.getValue()
+                    : select.value;
 
-let qty=parseInt(row.querySelector(".qty").value)||0;
-let price=parseFloat(row.dataset.price)||0;
-let stock=parseInt(row.dataset.stock)||0;
+                let qty = parseInt(row.querySelector(".qty").value) || 0;
+                let price = parseFloat(row.dataset.price) || 0;
+                let stock = parseInt(row.dataset.stock) || 0;
 
-if(!productId || qty<=0 || (stock>0 && qty>stock)){
-hasError=true;
-}
+                if (!productId || qty <= 0 || (stock > 0 && qty > stock)) {
+                    hasError = true;
+                }
 
-if(productId){
-items.push({
-productid:productId,
-quantity:qty,
-price:price
-});
-}
+                if (productId) {
+                    items.push({
+                        productid: productId,
+                        quantity: qty,
+                        price: price
+                    });
+                }
 
-});
+            });
 
-if(items.length===0){
-e.preventDefault();
-Swal.fire({
-icon:"warning",
-title:"ยังไม่ได้เลือกสินค้า"
-});
-return;
-}
+            if (items.length === 0) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "warning",
+                    title: "ยังไม่ได้เลือกสินค้า"
+                });
+                return;
+            }
 
-if(hasError){
-e.preventDefault();
-Swal.fire({
-icon:"error",
-title:"ข้อมูลไม่ถูกต้อง"
-});
-return;
-}
+            if (hasError) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "ข้อมูลไม่ถูกต้อง"
+                });
+                return;
+            }
 
-// ใส่ JSON ก่อน submit
-document.getElementById("products").value=JSON.stringify(items);
+            // ใส่ JSON ก่อน submit
+            document.getElementById("products").value = JSON.stringify(items);
 
-// ❗ ไม่ต้อง this.submit()
-// ปล่อยให้ form submit ตามธรรมชาติ
+            // ❗ ไม่ต้อง this.submit()
+            // ปล่อยให้ form submit ตามธรรมชาติ
 
-});
+        });
 
-addRow();
+        addRow();
 
-function cancelOrder(){
-Swal.fire({
-title:"ยกเลิกรายการ?",
-icon:"warning",
-showCancelButton:true
-}).then(res=>{
-if(res.isConfirmed){
-window.location="{{ route('orders.index') }}";
-}
-});
-}
+        function cancelOrder() {
+            Swal.fire({
+                title: "ยกเลิกรายการ?",
+                icon: "warning",
+                showCancelButton: true
+            }).then(res => {
+                if (res.isConfirmed) {
+                    window.location = "{{ route('orders.index') }}";
+                }
+            });
+        }
 
-</script>
+    </script>
 
 
 @endsection
