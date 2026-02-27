@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\EmployeeController;
 
 use App\Http\Controllers\AuthController;
 
@@ -31,7 +33,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 */
 
 Route::get('/', function () {
-    return redirect()->route('orders.index');
+    return redirect()->route('login');
 });
 
 
@@ -108,5 +110,23 @@ Route::get('/sales-summary-data', [DashboardController::class, 'salesSummaryData
     ->middleware(['check.login','check.owner']);
 
 
+//Supplier
+// Supplier
+Route::middleware('check.login')->group(function () {
+    Route::get('/suppliers', [SupplierController::class, 'index'])  ->name('suppliers.index');
+    Route::get('/suppliers/create', [SupplierController::class, 'create']) ->name('suppliers.create');
+    Route::post('/suppliers', [SupplierController::class, 'store'])  ->name('suppliers.store');
+    Route::get('/suppliers/{id}/edit', [SupplierController::class, 'edit'])   ->name('suppliers.edit');
+    Route::put('/suppliers/{id}', [SupplierController::class, 'update']) ->name('suppliers.update');
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+});
 
-
+//Employee
+Route::middleware(['check.login','check.owner'])->group(function () {
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+});

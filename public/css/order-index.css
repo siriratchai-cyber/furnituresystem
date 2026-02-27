@@ -1,0 +1,178 @@
+/* ===== ORDER CARD (mobile) ===== */
+.order-card-list { display: none; }
+
+.order-card {
+    padding: 18px;
+    border-radius: 16px;
+    background: #ffffff !important;
+    border: 1px solid #eadfce;
+    box-shadow: none !important;
+}
+
+.order-card:hover {
+    box-shadow: 0 8px 25px rgba(120,72,0,0.14);
+}
+
+.order-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3ede7;
+}
+
+.order-card-id {
+    font-size: 15px;
+    font-weight: 700;
+    color: #5a3e2b;
+}
+
+.order-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.order-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border: none;
+}
+
+/* label เหมือน product td::before */
+.order-card-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.order-card-value {
+    font-size: 14px;
+    color: #3e342b;
+    font-weight: 500;
+    text-align: right;
+}
+
+.order-card-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #f3ede7;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ปุ่มเหมือน product */
+.order-card-footer .btn-brown {
+    background: #4e342e;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.order-card-footer .btn-outline-brown {
+    border: 1px solid #8b5e34;
+    color: #8b5e34;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 13px;
+    background: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* desktop: แสดง table ซ่อน card */
+.table-scroll-wrapper { display: block; }
+.order-card-list      { display: none;  }
+
+@media (max-width: 768px) {
+    /* Mobile: ซ่อน table แสดง card */
+    .table-scroll-wrapper { display: none !important; }
+    .order-card-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    /* Card style เหมือน product */
+    .order-card {
+        margin-bottom: 0;
+        padding: 18px;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow:
+            -15px -10px 30px rgba(231,199,138,0.2),
+            inset -50px -50px 50px rgba(221,178,149,0.2),
+            inset 50px 50px 50px rgba(150,163,145,0.2);
+        border: none;
+    }
+
+    .order-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f3ede7;
+    }
+
+    .order-card-id {
+        font-size: 15px;
+        font-weight: 700;
+        color: #5a3e2b;
+    }
+
+    .order-card-row {
+        display: flex;
+        flex-direction: column;   /* label อยู่บน value อยู่ล่าง เหมือน product */
+        padding: 8px 0;
+        border-bottom: 1px solid #f3ede7;
+    }
+
+    .order-card-row:last-child { border-bottom: none; }
+
+    .order-card-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 4px;
+    }
+
+    .order-card-value {
+        font-size: 14px;
+        color: #3e342b;
+        font-weight: 500;
+    }
+
+    .order-card-footer {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .order-card-footer .btn-brown {
+        background: #4e342e;
+        color: white;
+        border-radius: 20px;
+        padding: 8px 24px;
+        font-size: 13px;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    input, select, textarea { font-size: 16px !important; }
+}
+

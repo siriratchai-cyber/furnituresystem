@@ -17,6 +17,11 @@ class AuthController extends Controller
         return view('login');
     }
 
+    public function showSupplier()
+    {
+        return view('supplier');
+    }
+
     /* ===============================
        LOGIN PROCESS
     =============================== */

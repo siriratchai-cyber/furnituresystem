@@ -1,0 +1,274 @@
+/* ===============================
+   ORDER SHOW — order-show.css
+================================ */
+
+body {
+    background: linear-gradient(135deg, #ece3dc, #f6efe9);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.wrapper { max-width: 1300px; margin: 60px auto; padding: 0 20px; }
+
+/* ===== CARD CONTAINER ===== */
+.card-container {
+    background: #fff;
+    border-radius: 30px;
+    padding: 45px;
+    box-shadow: 0 25px 70px rgba(93,64,55,.15);
+}
+
+/* ===== POS LAYOUT ===== */
+.pos-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 45px;
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.title { font-size: 24px; font-weight: 700; color: #4e342e; }
+.meta  { font-size: 14px; color: #8d6e63; }
+
+/* ===== BADGE ===== */
+.badge {
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.badge-paid      { background: #dcedc8; color: #33691e; }
+.badge-pending   { background: #ffe0b2; color: #bf360c; }
+.badge-cancelled { background: #ef9a9a; color: #b71c1c; }
+
+/* ===== SECTION ===== */
+.section { margin-bottom: 40px; }
+.section-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 18px;
+    color: #5d4037;
+}
+
+/* ===== INFO GRID ===== */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.info-item {
+    background: #faf7f5;
+    padding: 20px;
+    border-radius: 18px;
+    border: 1px solid #eee;
+}
+
+.info-label { font-size: 13px; color: #8d6e63; }
+.info-value  { font-weight: 600; color: #3e2723; }
+
+/* ===== TAX BOX ===== */
+.tax-box {
+    margin-top: 18px;
+    padding: 20px;
+    border-radius: 18px;
+    background: #f3ede9;
+    font-size: 14px;
+}
+
+/* ===== TABLE ===== */
+table { width: 100%; border-collapse: collapse; }
+
+th {
+    background: #f1ece8;
+    padding: 14px;
+    font-size: 14px;
+}
+
+td {
+    padding: 14px;
+    border-bottom: 1px solid #f0e6df;
+}
+
+/* ===== SUMMARY ===== */
+.summary { text-align: right; margin-top: 20px; }
+.total { font-size: 20px; font-weight: 700; margin-top: 10px; }
+
+/* ===== FOOTER ===== */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 12px;
+}
+
+.btn {
+    padding: 12px 25px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn-back    { background: #8d6e63; }
+.btn-receipt { background: #5d4037; }
+
+/* ===== PAYMENT CARD ===== */
+.payment-card {
+    background: #faf7f5;
+    border-radius: 28px;
+    padding: 35px;
+    box-shadow: 0 20px 50px rgba(93,64,55,.1);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.pay-title { font-size: 18px; font-weight: 700; color: #4e342e; }
+
+.qr-box {
+    text-align: center;
+    padding: 25px;
+    background: white;
+    border-radius: 20px;
+    border: 1px dashed #ddd;
+}
+
+.qr-box img { width: 180px; height: 180px; object-fit: contain; }
+
+.total-box {
+    background: linear-gradient(135deg, #5d4037, #8d6e63);
+    color: white;
+    padding: 22px;
+    border-radius: 20px;
+}
+
+.total-box .amount { font-size: 26px; font-weight: 700; }
+
+/* ===== INPUT GROUP ===== */
+.input-group { display: flex; flex-direction: column; gap: 5px; }
+
+.input-group input,
+.input-group select {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid #ddd;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.btn-action {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-success { background: linear-gradient(135deg, #2e7d32, #388e3c); }
+.btn-danger  { background: linear-gradient(135deg, #c62828, #e53935); }
+
+/* ===============================
+   RESPONSIVE — mobile
+================================ */
+
+@media (max-width: 768px) {
+
+    .wrapper { margin: 20px auto; padding: 0 12px; }
+
+    /* ===== CARD ===== */
+    .card-container {
+        padding: 20px 16px;
+        border-radius: 20px;
+    }
+
+    /* ===== POS LAYOUT — stack แนวตั้ง ===== */
+    .pos-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    /* payment card ขึ้นมาก่อนบน mobile */
+    .payment-card { order: -1; padding: 20px; border-radius: 20px; gap: 16px; }
+
+    /* ===== HEADER ===== */
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .title { font-size: 18px; }
+
+    /* ===== INFO GRID — 2 คอลัมน์ ===== */
+    .info-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-item  { padding: 14px; border-radius: 14px; }
+
+    /* ===== TABLE — card layout ===== */
+    table thead { display: none; }
+
+    table, tbody { display: block; }
+
+    tbody tr {
+        display: block;
+        background: #faf7f5;
+        border-radius: 14px;
+        margin-bottom: 10px;
+        padding: 14px;
+        border: 1px solid #eee;
+        border-bottom: none;
+    }
+
+    tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #f0e6df;
+        font-size: 14px;
+    }
+
+    tbody td:last-child { border-bottom: none; }
+
+    tbody td::before {
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 600;
+        color: #8d6e63;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+
+    /* ===== SUMMARY ===== */
+    .summary { text-align: left; }
+    .total { font-size: 18px; }
+
+    /* ===== FOOTER ===== */
+    .footer { flex-direction: column; }
+    .btn { width: 100%; text-align: center; padding: 14px; }
+
+    /* ===== QR ===== */
+    .qr-box img { width: 140px; height: 140px; }
+
+    .total-box .amount { font-size: 22px; }
+
+    /* ===== INPUT ===== */
+    .input-group input,
+    .input-group select {
+        font-size: 16px; /* ป้องกัน iOS zoom */
+    }
+}

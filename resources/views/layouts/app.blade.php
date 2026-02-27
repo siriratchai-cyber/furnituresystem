@@ -257,8 +257,10 @@ body {
        class="{{ request()->is('sales-summary') ? 'active-link' : '' }}">
        สรุปยอดขาย
     </a>
+    @endif
 
-    <a href="/profile"
+    @if(session('role') === 'เจ้าของ')
+    <a href="/employees"
        class="{{ request()->is('profile') ? 'active-link' : '' }}">
        พนักงาน
     </a>

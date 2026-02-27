@@ -1,0 +1,205 @@
+/* ===============================
+   ORDER TAX — order-tax.css
+================================ */
+
+body {
+    background: #f6efe9;
+    font-family: "Sarabun", "Segoe UI", sans-serif;
+}
+
+/* ===== WRAPPER ===== */
+.invoice-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0;
+    padding: 0 16px;
+}
+
+/* ===== INVOICE ===== */
+.invoice-outer {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    padding: 15mm;
+    border: 2px solid #000;
+    box-sizing: border-box;
+}
+
+.invoice-inner {
+    border: 1.5px solid #000;
+    padding: 20px;
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.store-info { font-size: 14px; line-height: 1.7; }
+
+.invoice-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.meta { font-size: 14px; text-align: right; }
+
+/* ===== SECTION ===== */
+.section { margin-top: 20px; font-size: 14px; line-height: 1.7; }
+
+/* ===== TABLE ===== */
+.table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+
+.table th,
+.table td {
+    border: 1px solid #000;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.table th { background: #f0f0f0; }
+
+/* ===== SUMMARY ===== */
+.summary {
+    margin-top: 15px;
+    width: 320px;
+    float: right;
+    font-size: 14px;
+}
+
+.summary div {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
+.summary .total { font-weight: 700; font-size: 16px; }
+
+.clearfix::after { content: ""; display: block; clear: both; }
+
+/* ===== SIGN SECTION ===== */
+.sign-section {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    font-size: 14px;
+}
+
+.sign-box { width: 40%; }
+
+.sign-line {
+    margin-top: 50px;
+    border-top: 1px solid #000;
+    padding-top: 5px;
+}
+
+/* ===== BUTTONS ===== */
+.button-group { margin-top: 40px; text-align: center; }
+
+.btn {
+    padding: 10px 25px;
+    border-radius: 5px;
+    background: #5d4037;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 5px;
+    display: inline-block;
+}
+
+/* ===============================
+   RESPONSIVE — mobile
+================================ */
+
+@media (max-width: 768px) {
+
+    .invoice-wrapper { margin: 16px 0; padding: 0 8px; }
+
+    /* ย่อ invoice ให้พอดีจอ */
+    .invoice-outer {
+        width: 100%;
+        min-height: unset;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .invoice-inner { padding: 14px; }
+
+    /* ===== HEADER — stack แนวตั้ง ===== */
+    .header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .invoice-title { font-size: 18px; }
+    .meta { text-align: left; }
+
+    /* ===== TABLE — scroll แนวนอน ===== */
+    .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 15px;
+    }
+
+    .table { min-width: 480px; }
+
+    .table th,
+    .table td { font-size: 12px; padding: 6px; }
+
+    /* ===== SUMMARY ===== */
+    .summary { float: none; width: 100%; margin-top: 20px; }
+
+    /* ===== SIGN SECTION ===== */
+    .sign-section { flex-direction: column; gap: 30px; align-items: center; }
+    .sign-box { width: 80%; }
+    .sign-line { margin-top: 35px; }
+
+    /* ===== BUTTONS ===== */
+    .button-group { margin-top: 24px; }
+
+    .btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 8px 0;
+        padding: 14px;
+        border-radius: 12px;
+    }
+}
+
+/* ===============================
+   PRINT
+================================ */
+
+@page { size: A4; margin: 10mm; }
+
+@media print {
+
+    html, body { width: 210mm; height: 297mm; }
+
+    body { margin: 0; background: white; }
+
+    .invoice-wrapper { margin: 0; padding: 0; }
+
+    .invoice-outer {
+        width: 190mm;
+        min-height: auto;
+        border: 2px solid #000;
+        padding: 10mm;
+        border-radius: 0;
+        page-break-after: avoid;
+    }
+
+    .button-group { display: none; }
+
+    /* คืนค่า table ให้แสดงปกติตอนพิมพ์ */
+    .table { min-width: unset; }
+    .table-wrap { overflow-x: unset; }
+    .summary { float: right; width: 320px; }
+    .sign-section { flex-direction: row; }
+    .sign-box { width: 40%; }
+}

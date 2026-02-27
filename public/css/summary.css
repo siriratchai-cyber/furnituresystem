@@ -1,0 +1,151 @@
+/* ===============================
+   SUMMARY — summary.css
+================================ */
+
+body {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(199,161,122,0.18), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139,94,60,0.15), transparent 40%),
+        linear-gradient(135deg, #faf7f3, #efe7dd);
+}
+/* ===== PAGE ANIMATE ===== */
+.page-animate { animation: fadeIn 0.8s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== MAIN CARD ===== */
+.summary-wrapper {
+    max-width: 820px;
+    margin: 70px auto;
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 30px;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+}
+
+/* ===== TITLE ===== */
+.summary-title {
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #5a3e2b;
+    text-align: center;
+}
+
+/* ===== TABS ===== */
+.summary-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+
+.tab {
+    padding: 8px 24px;
+    border: none;
+    border-radius: 30px;
+    background: #f2f2f2;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.tab.active {
+    background: linear-gradient(135deg, #c9a227, #e6c35c);
+    color: #3b2a1f;
+    box-shadow: 0 8px 20px rgba(201,162,39,0.4);
+}
+
+/* ===== CARD BOX ===== */
+.card-box {
+    background: #fafafa;
+    padding: 22px;
+    border-radius: 22px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    margin-bottom: 25px;
+}
+
+/* ===== SLIDE ANIMATION ===== */
+.slide-up {
+    opacity: 0;
+    transform: translateY(25px);
+    animation: slideUp 0.6s forwards;
+}
+
+.delay-1 { animation-delay: .2s; }
+.delay-2 { animation-delay: .4s; }
+
+@keyframes slideUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== INCOME / EXPENSE ===== */
+#income  { color: #c9a227; font-weight: 600; }
+#expense { color: #5a3e2b; font-weight: 600; }
+
+/* ===== TOP PRODUCTS ===== */
+ul { padding-left: 0; list-style: none; }
+
+ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    gap: 10px;
+}
+
+.rank { color: #c9a227; font-weight: 600; flex-shrink: 0; }
+.qty  { color: #777; flex-shrink: 0; }
+
+/* ===== CHART ===== */
+canvas { max-height: 300px; }
+
+/* ===============================
+   RESPONSIVE — mobile
+================================ */
+
+@media (max-width: 600px) {
+
+    /* ===== WRAPPER ===== */
+    .summary-wrapper {
+        margin: 20px 12px;
+        padding: 20px 16px;
+        border-radius: 20px;
+    }
+
+    .summary-title { font-size: 18px; margin-bottom: 20px; }
+
+    /* ===== TABS — scroll แนวนอนถ้าเยอะ ===== */
+    .summary-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 6px;
+        gap: 8px;
+        margin-bottom: 24px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .summary-tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+        flex-shrink: 0;
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+
+    /* ===== CARD BOX ===== */
+    .card-box { padding: 16px; border-radius: 16px; }
+
+    /* ===== CHART ===== */
+    canvas { max-height: 200px; }
+
+    /* ===== LIST ===== */
+    ul li { font-size: 13px; }
+}

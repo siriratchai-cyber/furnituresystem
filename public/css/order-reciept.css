@@ -1,0 +1,177 @@
+/* ===============================
+   ORDER RECEIPT — order-receipt.css
+================================ */
+
+body {
+    background: #f6efe9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+.receipt-wrapper {
+    max-width: 650px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* ===== CARD ===== */
+.receipt-card {
+    background: #fff;
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 25px 70px rgba(93,64,55,.15);
+}
+
+/* ===== STORE INFO ===== */
+.store-name {
+    text-align: center;
+    font-weight: 700;
+    font-size: 22px;
+    color: #4e342e;
+}
+
+.receipt-meta {
+    text-align: center;
+    font-size: 13px;
+    color: #8d6e63;
+    margin-top: 6px;
+}
+
+.paid-badge {
+    text-align: center;
+    margin: 15px 0;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+    border-top: 1px dashed #ddd;
+    margin: 18px 0;
+}
+
+/* ===== TABLE ===== */
+table { width: 100%; border-collapse: collapse; }
+
+th {
+    font-size: 13px;
+    text-align: left;
+    padding-bottom: 8px;
+    color: #6d4c41;
+}
+
+td {
+    font-size: 14px;
+    padding: 6px 0;
+}
+
+/* ===== SUMMARY ===== */
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 6px 0;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 16px;
+    color: #3e2723;
+}
+
+/* ===== FOOTER ===== */
+.footer-text {
+    text-align: center;
+    font-size: 12px;
+    color: #999;
+    margin-top: 20px;
+}
+
+/* ===== BUTTONS ===== */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 22px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.btn-back  { background: #8d6e63; color: white; }
+.btn-print { background: #5d4037; color: white; }
+.btn-tax   { background: #6d4c41; color: white; }
+
+.btn-back:hover  { background: #7a5c52; }
+.btn-print:hover { background: #4e342e; }
+.btn-tax:hover   { background: #5d3d33; }
+
+.btn-disabled { background: #ccc !important; cursor: not-allowed; }
+
+/* ===============================
+   RESPONSIVE — mobile
+================================ */
+
+@media (max-width: 600px) {
+
+    .receipt-wrapper { margin: 20px auto; padding: 0 12px; }
+
+    .receipt-card { padding: 24px 18px; border-radius: 20px; }
+
+    .store-name { font-size: 18px; }
+
+    /* table เป็น card แต่ละแถว */
+    table thead { display: none; }
+
+    table, tbody { display: block; }
+
+    tbody tr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f3ede7;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    td {
+        display: block;
+        font-size: 13px;
+        padding: 0;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 600;
+        color: #a08b7c;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    /* ปุ่มเต็มความกว้างบน mobile */
+    .button-group { flex-direction: column; gap: 10px; }
+    .btn { width: 100%; text-align: center; padding: 13px; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+    .button-group { display: none; }
+    body { background: white; }
+    .receipt-wrapper { margin: 0 auto; }
+    .receipt-card { box-shadow: none; border-radius: 0; }
+}
