@@ -29,7 +29,9 @@ Route::get('/products', [ProductController::class, 'list'])
 
 Route::middleware('check.login')->group(function () {
 
-    Route::get('/products', [ProductController::class, 'list']);
+
+    Route::get('/products', [ProductController::class, 'list'])
+    ->name('Product.list');
     Route::get('/products/create', function () {
         return view('Product.form');
     });
@@ -44,6 +46,7 @@ Route::middleware('check.login')->group(function () {
 
     });
 
+    Route::get('/products/create', [ProductController::class, 'create']);
     Route::get('/products/edit/{id}', [ProductController::class, 'edit']);
     Route::post('/products/store', [ProductController::class, 'store']);
     Route::post('/products/update/{id}', [ProductController::class, 'update']);

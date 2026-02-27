@@ -157,7 +157,7 @@ td{
 
 <strong>ลูกค้า:</strong> {{ $order->customername }} <br>
 <strong>เบอร์โทร:</strong> {{ $order->tel ?? '-' }} <br>
-<strong>พนักงาน:</strong> {{ $order->empname }}
+<strong>ผู้ดำเนินการ:</strong> {{ $order->empname }}
 
 <div class="divider"></div>
 

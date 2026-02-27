@@ -61,19 +61,16 @@
             color: #3e2b1d;
         }
 
-        .product-table td:nth-child(3),
-        .product-table td:nth-child(4) {
-            font-weight: 600;
-        }
-
         .product-table td:last-child {
             width: 130px;
             text-align: center;
         }
 
-        .product-table th:nth-child(4),
-        .product-table td:nth-child(4) {
+        .product-table th:nth-child(5),
+        .product-table td:nth-child(5) {
             text-align: center;
+            font-weight: 700;
+            font-size: 20px;
         }
 
         .action-buttons {
@@ -84,7 +81,7 @@
         }
 
         .btn-edit {
-            background: #2e8b57;
+            background: #84934A;
             color: white;
             border-radius: 20px;
             padding: 6px 18px;
@@ -93,12 +90,28 @@
         }
 
         .btn-delete {
-            background: #d64545;
+            background: #D3504A;
             color: white;
             border-radius: 20px;
             padding: 6px 14px;
             border: none;
         }
+
+        .search-btn {
+            background: #4e342e;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 25px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background: #256f47;
+            transform: translateY(-1px);
+        }
+
 
         @media (max-width: 768px) {
             .product-table thead {
@@ -157,17 +170,46 @@
                         📦 Product Management
                     </h5>
 
-                    <a href="/products/create" class="btn"
-                        style="background:white;
-                                                                                                                color:#6b4f3a;
-                                                                                                                font-weight:600;
-                                                                                                                border-radius:12px;
-                                                                                                                padding:6px 15px;">
+                    <a href="/products/create" class="btn" style="background:white;
+                                                                color:#6b4f3a;
+                                                                font-weight:600;
+                                                                border-radius:12px;
+                                                                padding:6px 15px;">
                         + เพิ่มสินค้า
                     </a>
                 </div>
 
                 <div class="p-4">
+                    <form method="GET" action="{{ route('Product.list') }}"
+                        class="mb-4 d-flex flex-column flex-md-row gap-2">
+
+                        <!-- ค้นหา -->
+                        <input type="text" name="search" class="form-control" placeholder="ค้นหาสินค้า..."
+                            value="{{ request('search') }}">
+
+                        <!-- เลือกหมวดหมู่ -->
+                        <select name="category" class="form-select">
+                            <option value="">-- ทุกหมวดหมู่ --</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->categories }}" {{ request('category') == $cat->categories ? 'selected' : '' }}>{{ $cat->categories }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <select name="producttype" class="form-select">
+                            <option value="">-- ทุกประเภท --</option>
+                            @foreach($producttype as $type)
+                                <option value="{{ $type->producttype }}" {{ request('producttype') == $type->producttype ? 'selected' : '' }}>{{ $type->producttype }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <!-- ปุ่ม -->
+                        <button type="submit" class="search-btn">
+                            ค้นหา
+                        </button>
+
+                    </form>
 
                     <div class="table-responsive">
                         <table class="product-table">
@@ -176,6 +218,7 @@
                                     <th>Product ID</th>
                                     <th>Product name</th>
                                     <th>Price</th>
+                                    <th>Date</th>
                                     <th>Amount</th>
                                     <th></th>
                                 </tr>
@@ -189,17 +232,18 @@
                                         </td>
 
                                         <td label="ชื่อสินค้า">
-                                            {{ $product->productname }}
+                                            {{ $product->productname }} ({{ $product->woodtype }})
                                         </td>
 
                                         <td label="ราคา">
                                             {{ number_format($product->price, 2) }}
                                         </td>
-
+                                        <td label="วันที่รับเข้า">
+                                            {{\Carbon\Carbon::parse($product->received_at)->format('d/m/Y H:i') }}
+                                        </td>
                                         <td label="จำนวน">
                                             {{ $product->stock }}
                                         </td>
-
                                         <td>
                                             <div class="action-buttons">
                                                 <a href="/products/edit/{{ $product->productid }}" class="btn-edit">

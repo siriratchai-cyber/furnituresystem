@@ -21,13 +21,12 @@
 
         <!-- INCOME / EXPENSE -->
         <div class="card-box info-card slide-up delay-1">
-    <h5>สรุปรายรับ / รายจ่าย</h5>
-    <p>รายรับ: <span id="income">-</span></p>
-    <p>รายจ่าย: <span id="expense">-</span></p>
-    <p>กำไรสุทธิ: <span id="net">-</span></p>
-    <p>การเปลี่ยนแปลง: <span id="changePercent">-</span></p>
-</div>
-
+            <h5>สรุปรายรับ / รายจ่าย</h5>
+            <p>รายรับ: <span id="income">-</span></p>
+            <p>รายจ่าย: <span id="expense">-</span></p>
+            <p>กำไรสุทธิ: <span id="net">-</span></p>
+            <p>การเปลี่ยนแปลง: <span id="changePercent">-</span></p>
+        </div>
 
         <!-- TOP PRODUCTS -->
         <div class="card-box info-card slide-up delay-2">
@@ -83,52 +82,57 @@ function loadSummary(period='week'){
 
         // ===== KPI =====
         document.getElementById('income').innerText =
-            '฿' + (data.income ?? 0).toLocaleString();
+            formatCurrency(data.income);
 
         document.getElementById('expense').innerText =
-            '฿' + (data.outcome ?? 0).toLocaleString();
+            formatCurrency(data.outcome);
 
         document.getElementById('net').innerText =
-            '฿' + (data.net ?? 0).toLocaleString();
+            formatCurrency(data.net);
 
         const changeEl = document.getElementById('changePercent');
 
-        changeEl.innerText =
-            (data.change_percent ?? 0).toFixed(2) + ' %';
-
-        // เปลี่ยนสี %
-        if(data.change_percent > 0){
-            changeEl.style.color = "#1b5e20";
-        }else if(data.change_percent < 0){
-            changeEl.style.color = "#b71c1c";
-        }else{
+        if (data.change_percent === '-' || data.change_percent === null) {
+            changeEl.innerText = '-';
             changeEl.style.color = "#555";
+        } else {
+            const percent = Number(data.change_percent);
+            changeEl.innerText = percent.toFixed(2) + ' %';
+
+            if (percent > 0) {
+                changeEl.style.color = "#1b5e20";
+            } else if (percent < 0) {
+                changeEl.style.color = "#b71c1c";
+            } else {
+                changeEl.style.color = "#555";
+            }
         }
 
         // ===== TOP PRODUCTS =====
-const ul = document.getElementById('topProducts');
-ul.innerHTML = '';
+        const ul = document.getElementById('topProducts');
+        ul.innerHTML = '';
 
-if (Array.isArray(data.top)) {
-    data.top.forEach((p,i)=>{
-        ul.innerHTML += `
-            <li>
-                <span class="rank">#${i+1}</span>
-                ${p.productname}
-                <span class="qty">${p.qty} ชิ้น</span>
-            </li>
-        `;
-    });
-}
-updateChart(data); // ✅ เพิ่มบรรทัดนี้
+        if (Array.isArray(data.top) && data.top.length > 0) {
+            data.top.forEach((p,i)=>{
+                ul.innerHTML += `
+                    <li>
+                        <span class="rank">#${i+1}</span>
+                        ${p.productname}
+                        <span class="qty">${p.qty} ชิ้น</span>
+                    </li>
+                `;
+            });
+        } else {
+            ul.innerHTML = `<li>-</li>`;
+        }
+
+        updateChart(data);
 
     })
     .catch(err => {
-    console.error("Summary Error:", err);
-});
-
+        console.error("Summary Error:", err);
+    });
 }
-
 
 function updateChart(data){
 
@@ -139,28 +143,27 @@ function updateChart(data){
     chart = new Chart(ctx,{
         type:'bar',
         data:{
-            labels:data.labels,
+            labels: data.labels ?? [],
             datasets:[
                 {
                     type:'bar',
                     label:'รายรับ',
-                    data:data.sales,
+                    data: data.sales ?? [],
                     backgroundColor:'rgba(201,162,39,0.85)',
                     borderRadius:8
                 },
                 {
                     type:'bar',
                     label:'รายจ่าย',
-                    data:data.expense,
+                    data: data.expense ?? [],
                     backgroundColor:'rgba(90,62,43,0.8)',
                     borderRadius:8
                 },
                 {
                     type:'line',
                     label:'กำไรสุทธิ',
-                    data:data.profit,
+                    data: data.profit ?? [],
                     borderColor:'#1b5e20',
-                    backgroundColor:'#1b5e20',
                     tension:0.4,
                     borderWidth:3,
                     fill:false,
@@ -170,19 +173,13 @@ function updateChart(data){
         },
         options:{
             responsive:true,
-            animation:{ duration:1200 },
+            maintainAspectRatio:false,
             plugins:{
-                legend:{
-                    labels:{ color:'#5a3e2b' }
-                },
-                tooltip:{
-                    callbacks:{
-                        label:(ctx)=>formatCurrency(ctx.raw)
-                    }
-                }
+                legend:{ labels:{ color:'#5a3e2b' } }
             },
             scales:{
                 y:{
+                    beginAtZero:true,
                     ticks:{
                         callback:(v)=>formatCurrency(v)
                     }
@@ -196,7 +193,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     loadSummary('week');
 });
 </script>
-
 @endpush
 
 

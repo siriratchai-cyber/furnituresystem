@@ -7,10 +7,69 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $products = DB::table('product')->get();
-        return view('Product.list', compact('products'));
+        $query = DB::table('product');
+
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('productid', 'like', '%' . $request->search . '%')
+                    ->orWhere('productname', 'like', '%' . $request->search . '%');
+            });
+        }
+        if ($request->category) {
+            $query->where('categories', $request->category);
+        }
+        if ($request->producttype) {
+            $query->where('producttype', $request->producttype);
+        }
+
+        if ($request->sort == 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($request->sort == 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } else {
+            $query->orderBy('productid', 'asc');
+        }
+
+        $products = $query->get();
+
+        $categories = DB::table('product')
+            ->select('categories')
+            ->distinct()
+            ->get();
+
+        $producttype = DB::table('product')
+            ->select('producttype')
+            ->distinct()
+            ->get();
+
+        return view('Product.list', compact('products', 'categories', 'producttype'));
+    }
+
+    public function create()
+    {
+        $suppliers = DB::table('supplier')->get();
+
+        $categories = DB::table('product')
+            ->select('categories')
+            ->distinct()
+            ->get();
+
+        $woodtypes = DB::table('product')
+            ->select('woodtype')
+            ->distinct()
+            ->get();
+
+        $producttypes = DB::table('product')
+            ->select('producttype')
+            ->distinct()
+            ->get();
+
+        return view(
+            'Product.form',
+            compact('suppliers', 'categories', 'woodtypes', 'producttypes')
+        );
     }
 
     public function edit($id)
@@ -19,15 +78,40 @@ class ProductController extends Controller
             ->where('productid', $id)
             ->first();
 
-        return view('Product.form', compact('product'));
+        $suppliers = DB::table('supplier')->get();
+
+        $categories = DB::table('product')
+            ->select('categories')
+            ->distinct()
+            ->get();
+
+        $woodtypes = DB::table('product')
+            ->select('woodtype')
+            ->distinct()
+            ->get();
+
+        $producttypes = DB::table('product')
+            ->select('producttype')
+            ->distinct()
+            ->get();
+
+        return view(
+            'Product.form',
+            compact('product', 'suppliers', 'categories', 'woodtypes', 'producttypes')
+        );
     }
 
-    // เพิ่มสินค้า
     public function store(Request $request)
     {
         DB::table('product')->insert([
             'productid' => $request->productid,
             'productname' => $request->productname,
+            'producttype' => $request->producttype,
+            'supplierid' => $request->supplierid,
+            'categories' => $request->categories,
+            'woodtype' => $request->woodtype,
+            'received_at' => now(),
+            'cost' => $request->cost,
             'price' => $request->price,
             'stock' => $request->stock,
         ]);
@@ -35,13 +119,17 @@ class ProductController extends Controller
         return redirect('/products');
     }
 
-    // แก้ไขสินค้า
     public function update(Request $request, $id)
     {
         DB::table('product')
             ->where('productid', $id)
             ->update([
                 'productname' => $request->productname,
+                'producttype' => $request->producttype,
+                'supplierid' => $request->supplierid,
+                'categories' => $request->categories,
+                'woodtype' => $request->woodtype,
+                'cost' => $request->cost,
                 'price' => $request->price,
                 'stock' => $request->stock,
             ]);
@@ -49,7 +137,6 @@ class ProductController extends Controller
         return redirect('/products');
     }
 
-    // ลบสินค้า
     public function delete($id)
     {
         DB::table('product')

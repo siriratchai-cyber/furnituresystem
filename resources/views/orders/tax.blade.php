@@ -24,6 +24,10 @@ $vatAmount      = $netTotal - $priceBeforeVat;
 
 
 <style>
+
+/* =========================
+   SCREEN VIEW
+========================= */
 body{
     background:#f6efe9;
     font-family:"Sarabun","Segoe UI",sans-serif;
@@ -36,15 +40,17 @@ body{
 }
 
 .invoice-outer{
-    width:900px;
+    width:210mm;
+    min-height:297mm;
     background:white;
-    padding:30px;
-    border:3px solid #000;
+    padding:15mm;
+    border:2px solid #000;
+    box-sizing:border-box;
 }
 
 .invoice-inner{
-    border:2px solid #000;
-    padding:35px;
+    border:1.5px solid #000;
+    padding:20px;
 }
 
 .header{
@@ -94,7 +100,7 @@ body{
 
 .summary{
     margin-top:15px;
-    width:300px;
+    width:320px;
     float:right;
     font-size:14px;
 }
@@ -149,11 +155,45 @@ body{
     margin:0 5px;
 }
 
-@media print{
-    body{ background:white; }
-    .button-group{ display:none; }
+/* =========================
+   PRINT FIX (สำคัญมาก)
+========================= */
+@page {
+    size: A4;
+    margin: 10mm;
 }
+
+@media print{
+
+    html, body{
+        width:210mm;
+        height:297mm;
+    }
+
+    body{
+        margin:0;
+        background:white;
+    }
+
+    .invoice-wrapper{
+        margin:0;
+    }
+
+    .invoice-outer{
+        width:190mm;      /* 210 - margin */
+        min-height:auto;
+        border:2px solid #000;
+        padding:10mm;
+        page-break-after:avoid;
+    }
+
+    .button-group{
+        display:none;
+    }
+}
+
 </style>
+
 
 <div class="invoice-wrapper">
 <div class="invoice-outer">
