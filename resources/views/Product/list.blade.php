@@ -1,0 +1,280 @@
+@extends('layouts.app')
+
+@section('content')
+    <style>
+        .product-card {
+            border-radius: 25px;
+            background: #f9f5f0;
+            overflow: hidden;
+        }
+
+        .product-header {
+            background: linear-gradient(90deg, #5a3e2b, #8b6a4f);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .product-header a {
+            position: relative;
+            z-index: 20;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-table thead {
+            background: #f1ece6;
+        }
+
+        .product-table thead th {
+            font-weight: 700;
+            padding: 16px;
+            border-bottom: 1px solid #e3ddd6;
+        }
+
+        .product-table tbody tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .product-table td {
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .product-table td:first-child {
+            font-weight: 700;
+            color: #3e2b1d;
+        }
+
+        .product-table td:last-child {
+            width: 130px;
+            text-align: center;
+        }
+
+        .product-table th:nth-child(5),
+        .product-table td:nth-child(5) {
+            text-align: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-right: 50px;
+        }
+
+        .btn-edit {
+            background: #84934A;
+            color: white;
+            border-radius: 20px;
+            padding: 6px 18px;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background: #D3504A;
+            color: white;
+            border-radius: 20px;
+            padding: 6px 14px;
+            border: none;
+        }
+
+        .search-btn {
+            background: #4e342e;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 25px;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background: #256f47;
+            transform: translateY(-1px);
+        }
+
+
+        @media (max-width: 768px) {
+            .product-table thead {
+                display: none;
+            }
+
+            .product-table,
+            .product-table tbody,
+            .product-table tr {
+                display: block;
+                width: 100%;
+            }
+
+            .product-table tr {
+                margin-bottom: 20px;
+                padding: 18px;
+                border-radius: 16px;
+                background: #ffffff;
+                box-shadow: -15px -10px 30px rgb(231, 199, 138, 0.2), inset -50px -50px 50px rgb(221, 178, 149, 0.2), inset 50px 50px 50px rgb(150, 163, 145, 0.2);
+            }
+
+            .product-table td {
+                display: block;
+                padding: 8px 0;
+                border: none;
+            }
+
+            .product-table td::before {
+                content: attr(label);
+                font-weight: 600;
+                color: #666;
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            .action-buttons {
+                margin-left: 3cm;
+                padding: auto;
+            }
+
+            .action-buttons .btn-edit {
+                margin-right: 25px;
+                text-decoration: none;
+            }
+        }
+    </style>
+
+
+    <div class="container py-5">
+        <div class="container">
+
+            <div class="product-card">
+
+                <div class="product-header">
+                    <h5 class="mb-0 fw-bold">
+                        📦 Product Management
+                    </h5>
+
+                    <a href="/products/create" class="btn" style="background:white;
+                                                                color:#6b4f3a;
+                                                                font-weight:600;
+                                                                border-radius:12px;
+                                                                padding:6px 15px;">
+                        + เพิ่มสินค้า
+                    </a>
+                </div>
+
+                <div class="p-4">
+                    <form method="GET" action="{{ route('Product.list') }}"
+                        class="mb-4 d-flex flex-column flex-md-row gap-2">
+
+                        <!-- ค้นหา -->
+                        <input type="text" name="search" class="form-control" placeholder="ค้นหาสินค้า..."
+                            value="{{ request('search') }}">
+
+                        <!-- เลือกหมวดหมู่ -->
+                        <select name="category" class="form-select">
+                            <option value="">-- ทุกหมวดหมู่ --</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->categories }}" {{ request('category') == $cat->categories ? 'selected' : '' }}>{{ $cat->categories }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <select name="producttype" class="form-select">
+                            <option value="">-- ทุกประเภท --</option>
+                            @foreach($producttype as $type)
+                                <option value="{{ $type->producttype }}" {{ request('producttype') == $type->producttype ? 'selected' : '' }}>{{ $type->producttype }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <!-- ปุ่ม -->
+                        <button type="submit" class="search-btn">
+                            ค้นหา
+                        </button>
+
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="product-table">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product name</th>
+                                    <th>Price</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @forelse($products as $product)
+                                    <tr>
+                                        <td label="รหัสสินค้า">
+                                            #{{ $product->productid }}
+                                        </td>
+
+                                        <td label="ชื่อสินค้า">
+                                            {{ $product->productname }} ({{ $product->woodtype }})
+                                        </td>
+
+                                        <td label="ราคา">
+                                            {{ number_format($product->price, 2) }}
+                                        </td>
+                                        <td label="วันที่รับเข้า">
+                                            {{\Carbon\Carbon::parse($product->received_at)->format('d/m/Y H:i') }}
+                                        </td>
+                                        <td label="จำนวน">
+                                            {{ $product->stock }}
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="/products/edit/{{ $product->productid }}" class="btn-edit">
+                                                    แก้ไข
+                                                </a>
+
+                                                <form action="/products/delete/{{ $product->productid }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" onclick="return confirm('ต้องการจะลบจริงหรือไม่?')"
+                                                        class="btn-delete">
+                                                        ลบ
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            ยังไม่มีข้อมูลสินค้า
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+@endsection

@@ -248,21 +248,19 @@ body {
     </div>
 
     <a href="/suppliers"
-       class="{{ request()->is('suppliers') ? 'active-link' : '' }}">
-       ซัพพลายเออร์
+        class="{{ request()->is('suppliers*') ? 'active-link' : '' }}">
+        ซัพพลายเออร์
     </a>
 
     @if(session('role') === 'เจ้าของ')
-    <a href="{{ route('sales.summary') }}"
-       class="{{ request()->is('sales-summary') ? 'active-link' : '' }}">
-       สรุปยอดขาย
+        <a href="{{ route('sales.summary') }}"
+        class="{{ request()->is('sales-summary*') ? 'active-link' : '' }}">
+        สรุปยอดขาย
     </a>
-    @endif
 
-    @if(session('role') === 'เจ้าของ')
-    <a href="/employees"
-       class="{{ request()->is('profile') ? 'active-link' : '' }}">
-       พนักงาน
+    <a href="{{ route('employees.index') }}"
+        class="{{ request()->is('employees*') ? 'active-link' : '' }}">
+        พนักงาน
     </a>
     @endif
 
