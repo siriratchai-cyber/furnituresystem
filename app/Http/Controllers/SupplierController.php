@@ -38,6 +38,7 @@ class SupplierController extends Controller
         }
 
         $newSupplierId = 'SUP' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        
         DB::table('supplier')->insert([
             'supplierid'    => $newSupplierId,
             'suppliername'  => trim($request->suppliername),

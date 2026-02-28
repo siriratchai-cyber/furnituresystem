@@ -133,22 +133,8 @@ tr:hover td { background: #f9f4ee; }
 
 .btn-secondary:hover { background: rgba(199,161,122,0.1); }
 
-/* ===== TOAST ===== */
-.toast-box {
-    position: fixed;
-    top: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 14px 24px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--brown-dark), var(--brown-main));
-    color: white;
-    font-size: 13px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    display: none;
-    z-index: 2000;
-    white-space: nowrap;
-}
+
+
 
 /* ===============================
    RESPONSIVE — mobile

@@ -64,9 +64,9 @@ $vatAmount      = $netTotal - $priceBeforeVat;
 <table class="table">
     <thead>
         <tr>
-            <th width="5%">ลำดับ</th>
-            <th width="45%">รายการ</th>
-            <th width="10%">จำนวน</th>
+            <th width="13%">ลำดับ</th>
+            <th width="27%">รายการ</th>
+            <th width="15%">จำนวน</th>
             <th width="20%">ราคาต่อหน่วย</th>
             <th width="20%">จำนวนเงิน</th>
         </tr>

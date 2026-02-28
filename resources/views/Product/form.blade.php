@@ -50,7 +50,7 @@
         }
 
         .btn-save {
-            background: #2e8b57;
+            background: #84934A;
             color: white;
             border-radius: 20px;
             padding: 10px 25px;
@@ -59,7 +59,7 @@
         }
 
         .btn-cancel {
-            background: #d64545;
+            background: #D3504A;
             color: white;
             border-radius: 20px;
             padding: 10px 25px;
@@ -105,13 +105,6 @@
                     <form action="{{ $isEdit ? '/products/update/' . $product->productid : '/products/store' }}"
                         method="POST">
                         @csrf
-
-                        <div class="form-group">
-                            <label>รหัสสินค้า</label>
-                            <input type="text" name="productid" class="form-control"
-                                value="{{ old('productid', $product->productid ?? '') }}" {{ $isEdit ? 'readonly' : '' }}
-                                required>
-                        </div>
 
                         <div class="form-group">
                             <label>ชื่อสินค้า</label>

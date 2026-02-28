@@ -49,7 +49,7 @@
 
 </div>
 
-<div class="toast-box" id="toast"></div>
+
 
 <script>
 
@@ -78,16 +78,6 @@ function loadDashboard(){
         });
         document.getElementById('stockTable').innerHTML = table;
 
-        if(data.critical.length > 0){
-            let msg = "สินค้าใกล้หมดมาก: ";
-            data.critical.forEach(p=>{
-                msg += p.productname + " ("+p.stock+") ";
-            });
-            let toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.display='block';
-            setTimeout(()=> toast.style.display='none',5000);
-        }
 
         const todayLabel = new Date().toLocaleDateString('en-US',{ weekday:'short' });
 

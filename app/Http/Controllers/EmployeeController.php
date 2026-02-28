@@ -44,7 +44,7 @@ class EmployeeController extends Controller
             'empname'    => trim($request->empname),
             'position'   => $request->position,
             'tel'        => $request->tel,
-            'password'   => bcrypt($request->NULL),
+            'password'   => NULL,
         ]);
 
         return redirect()->route('employees.index')

@@ -101,10 +101,25 @@ class ProductController extends Controller
         );
     }
 
+    
+    
     public function store(Request $request)
     {
+        $last = DB::table('product')
+        ->select(DB::raw('TRIM(productid) as productid'))
+        ->orderBy('productid', 'desc')
+        ->first();
+
+        if ($last && preg_match('/P(\d+)/', $last->productid, $match)) {
+            $nextNumber = (int)$match[1] + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        $newSupplierId = 'P' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+
         DB::table('product')->insert([
-            'productid' => $request->productid,
+            'productid' => $newSupplierId,
             'productname' => $request->productname,
             'producttype' => $request->producttype,
             'supplierid' => $request->supplierid,

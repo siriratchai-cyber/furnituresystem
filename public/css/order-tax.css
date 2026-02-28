@@ -145,10 +145,16 @@ body {
         margin-top: 15px;
     }
 
-    .table { min-width: 480px; }
+    /* ลบ min-width ออก ให้ตารางยืดตามหน้าจอ */
+    .table { min-width: unset; width: 100%; }
 
     .table th,
-    .table td { font-size: 12px; padding: 6px; }
+    .table td {
+        font-size: 8px;
+        padding: 8px 6px;
+        border: 1px solid #000; 
+        word-break: break-word;
+    }
 
     /* ===== SUMMARY ===== */
     .summary { float: none; width: 100%; margin-top: 20px; }
