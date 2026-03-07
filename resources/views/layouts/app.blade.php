@@ -246,10 +246,16 @@ body {
            เพิ่มสินค้า
         </a>
     </div>
+    
 
     <a href="/suppliers"
         class="{{ request()->is('suppliers*') ? 'active-link' : '' }}">
         ซัพพลายเออร์
+    </a>
+
+    <a href="{{ route('employees.index') }}"
+        class="{{ request()->is('employees*') ? 'active-link' : '' }}">
+        พนักงาน
     </a>
 
     @if(session('role') === 'เจ้าของ')
@@ -258,10 +264,6 @@ body {
         สรุปยอดขาย
     </a>
 
-    <a href="{{ route('employees.index') }}"
-        class="{{ request()->is('employees*') ? 'active-link' : '' }}">
-        พนักงาน
-    </a>
     @endif
 
 

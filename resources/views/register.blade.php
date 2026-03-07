@@ -43,12 +43,12 @@
 </div>
 
 <div class="input-group">
-    <label>เบอร์โทร</label>
+    <label>เบอร์โทรศัพท์</label>
     <input type="text" name="tel" value="{{ old('tel') }}" required>
 </div>
 
 <div class="input-group">
-    <label>รหัสผ่าน</label>
+    <label>สร้างรหัสผ่าน</label>
     <input type="password" name="password" required>
 </div>
 

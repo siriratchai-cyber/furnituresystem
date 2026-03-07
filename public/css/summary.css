@@ -125,7 +125,7 @@ canvas { max-height: 300px; }
     .summary-tabs {
         flex-wrap: nowrap;
         overflow-x: auto;
-        justify-content: flex-start;
+        justify-content: center;
         padding-bottom: 6px;
         gap: 8px;
         margin-bottom: 24px;
@@ -149,3 +149,6 @@ canvas { max-height: 300px; }
     /* ===== LIST ===== */
     ul li { font-size: 13px; }
 }
+
+
+

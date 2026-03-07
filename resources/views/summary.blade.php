@@ -175,14 +175,32 @@ function updateChart(data){
         options:{
             responsive:true,
             maintainAspectRatio:false,
+
             plugins:{
-                legend:{ labels:{ color:'#5a3e2b' } }
+                legend:{
+                    position:'top',
+                    align:'center',
+                    labels:{
+                        color:'#5a3e2b',
+                        boxWidth:14,
+                        boxHeight:14,
+                        padding:15,
+                        font:{ size:12 }
+                    }
+                }
             },
+
             scales:{
                 y:{
                     beginAtZero:true,
                     ticks:{
-                        callback:(v)=>formatCurrency(v)
+                        font:{ size:10 },
+                        callback:(value)=>formatCurrency(value)
+                    }
+                },
+                x:{
+                    ticks:{
+                        font:{ size:10 }
                     }
                 }
             }

@@ -27,7 +27,7 @@
         </div>
 
         <div class="input-group">
-            <label>เบอร์โทร</label>
+            <label>เบอร์โทรศัพท์</label>
             <input type="text" name="tel" id="tel" value="{{ old('tel') }}" required>
             <div class="error-text" id="telError"></div>
             @error('tel')

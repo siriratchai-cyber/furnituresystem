@@ -51,7 +51,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">ผู้ติดต่อ</label>
+                <label class="form-label">ช่องทางการติดต่อ</label>
                 <input type="text" name="contactperson" class="form-input"
                     value="{{ old('contactperson', $supplier->contactperson) }}">
             </div>
